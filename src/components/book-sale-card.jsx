@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom';
 const BookSaleCard = (props) => {
     return (
         <Card sx={{ maxWidth: 345 }} className="m-3">
-            <Link to={'books/' + props.data.name}>
+            <Link to={'books/' + props.data.id + '/' + props.data.name}>
                 <CardMedia
                     component="img"
                     height="350"
