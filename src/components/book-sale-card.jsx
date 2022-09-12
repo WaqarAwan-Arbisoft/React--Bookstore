@@ -6,22 +6,22 @@ import Typography from '@mui/material/Typography';
 import { Button, CardActionArea, CardActions } from '@mui/material';
 import { Link } from 'react-router-dom';
 
-const BookSaleCard = () => {
+const BookSaleCard = (props) => {
     return (
         <Card sx={{ maxWidth: 345 }} className="m-3">
-            <Link to={'books/1'}>
+            <Link to={'books/' + props.data.name}>
                 <CardMedia
                     component="img"
                     height="350"
-                    image="/Images/book-1.jpeg"
+                    image={props.data.image === null ? 'https://via.placeholder.com/300x350' : props.data.image}
                     alt="green iguana"
                 />
                 <CardContent>
                     <Typography gutterBottom variant="h5" component="div">
-                        Lizard
+                        {props.data.name}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                        <b>Price: </b>250
+                        <b>Price: </b>${props.data.price}
                     </Typography>
                 </CardContent>
             </Link>
