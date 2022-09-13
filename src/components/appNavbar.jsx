@@ -12,6 +12,7 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import { Link } from 'react-router-dom';
+import PrimaryBtn1 from '../UI/primary-btn';
 
 const settings = ['Profile', 'cart', 'Logout'];
 
@@ -41,7 +42,6 @@ const AppNavbar = () => {
                         variant="h6"
                         noWrap
                         component="a"
-                        href="/"
                         sx={{
                             mr: 2,
                             display: { xs: 'none', md: 'flex' },
@@ -52,8 +52,9 @@ const AppNavbar = () => {
                             textDecoration: 'none',
                         }}
                     >
-                        <img src="/Images/Logo/logo.png" alt="LOGO" width={100} />
-
+                        <Link to='/'>
+                            <img src="/Images/Logo/logo.png" alt="LOGO" width={100} />
+                        </Link>
                     </Typography>
 
                     <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -106,7 +107,9 @@ const AppNavbar = () => {
                             textDecoration: 'none',
                         }}
                     >
-                        <img src="/Images/Logo/logo.png" alt="LOGO" width={75} />
+                        <Link to='/'>
+                            <img src="/Images/Logo/logo.png" alt="LOGO" width={100} />
+                        </Link>
                     </Typography>
                     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
                         <Link to='/'>
@@ -123,7 +126,7 @@ const AppNavbar = () => {
                     </Box>
 
                     <Box sx={{ flexGrow: 0 }}>
-                        <Tooltip title="Open settings">
+                        {/* <Tooltip title="Open settings">
                             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                                 <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
                             </IconButton>
@@ -149,7 +152,15 @@ const AppNavbar = () => {
                                     <Typography textAlign="center">{setting}</Typography>
                                 </MenuItem>
                             ))}
-                        </Menu>
+                        </Menu> */}
+
+                        <Link to='/login'>
+                            <PrimaryBtn1 color={'success'} className={"mx-2"}>Login</PrimaryBtn1>
+                        </Link>
+                        <Link to='/register'>
+                            <PrimaryBtn1 color={'info'} className={"mx-2"}>Register</PrimaryBtn1>
+                        </Link>
+
                     </Box>
                 </Toolbar>
             </Container>

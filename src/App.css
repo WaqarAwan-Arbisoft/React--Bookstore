@@ -2,3 +2,12 @@ a {
   text-decoration: none !important;
   color: inherit !important;
 }
+
+.quantity {
+  display: inline-block;
+  width: 40px;
+}
+
+.shadow-self {
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px !important;
+}
