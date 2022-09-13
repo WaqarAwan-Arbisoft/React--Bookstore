@@ -11,19 +11,45 @@ import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { Container } from '@mui/material';
+import { Alert, Container } from '@mui/material';
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
 
 const theme = createTheme();
 
 export default function Register() {
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [country, setCountry] = useState('');
+    const [age, setAge] = useState('');
+    const [image, setImage] = useState(null);
+    const [error, setError] = useState({ status: false, message: '' })
+
+    const nameChangeHandler = (e) => {
+        setName(e.target.value);
+    }
+    const emailChangeHandler = (e) => {
+        setEmail(e.target.value);
+    }
+
+    const passwordChangeHandler = (e) => {
+        setPassword(e.target.value);
+    }
+
+    const countryChangeHandler = (e) => {
+        setCountry(e.target.value);
+    }
+
+    const ageChangeHandler = (e) => {
+        if (!(/^\d+$/.test(e.target.value[e.target.value.length - 1]))) {
+            return;
+        }
+        setAge(e.target.value);
+    }
+
     const handleSubmit = (event) => {
         event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        console.log({
-            email: data.get('email'),
-            password: data.get('password'),
-        });
     };
 
     return (
@@ -61,27 +87,36 @@ export default function Register() {
                             <Typography component="h1" variant="h5">
                                 Sign up
                             </Typography>
+                            {error.status ? (
+                                <Alert className='mt-3' variant="filled" severity="error">
+                                    {error.message}
+                                </Alert>
+                            ) : ''}
+
                             <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
                                 <Grid container spacing={2}>
                                     <Grid item xs={12}>
                                         <TextField
-                                            autoComplete="given-name"
-                                            name="Full name"
+                                            autoComplete="name"
+                                            name="name"
                                             required
                                             fullWidth
-                                            id="firstName"
-                                            label="First Name"
+                                            id="name"
+                                            label="Full Name"
                                             autoFocus
+                                            onChange={nameChangeHandler}
                                         />
                                     </Grid>
                                     <Grid item xs={12}>
                                         <TextField
+                                            type='email'
                                             required
                                             fullWidth
                                             id="email"
                                             label="Email Address"
                                             name="email"
                                             autoComplete="email"
+                                            onChange={emailChangeHandler}
                                         />
                                     </Grid>
                                     <Grid item xs={12}>
@@ -93,6 +128,7 @@ export default function Register() {
                                             type="password"
                                             id="password"
                                             autoComplete="new-password"
+                                            onChange={passwordChangeHandler}
                                         />
                                     </Grid>
                                     <Grid item xs={12}>
@@ -102,6 +138,7 @@ export default function Register() {
                                             fullWidth
                                             id="country"
                                             label="Country"
+                                            onChange={countryChangeHandler}
                                         />
                                         <small className='text-muted'>*Pakistan will be selected as country if you do not specify.</small>
                                     </Grid>
@@ -113,6 +150,8 @@ export default function Register() {
                                             fullWidth
                                             id="age"
                                             label="Age"
+                                            onChange={ageChangeHandler}
+                                            value={age}
                                         />
                                         <small className='text-muted'>*Age will be considered 18 if you do not specify.</small>
                                     </Grid>
