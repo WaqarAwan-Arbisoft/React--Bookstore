@@ -7,7 +7,6 @@ import PrimaryBtn1 from "../UI/primary-btn";
 
 const BookDetails = () => {
     let id = useParams().id
-    console.log(id)
     const [book, setBook] = useState(null)
     const [isBookLoaded, setIsBookLoaded] = useState(false)
     const [quantity, setQuantity] = useState(1)

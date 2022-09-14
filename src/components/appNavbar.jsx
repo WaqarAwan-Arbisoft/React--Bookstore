@@ -11,14 +11,21 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import { Link } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import PrimaryBtn1 from '../UI/primary-btn';
+import { useDispatch, useSelector } from 'react-redux';
+import { authAction } from '../store/auth-slice';
+import Cookies from 'universal-cookie'
 
 const settings = ['Profile', 'cart', 'Logout'];
 
 const AppNavbar = () => {
+    const authStates = useSelector(state => state.auth)
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
+    const dispatch = useDispatch();
+    const cookies = new Cookies();
+    const navigate = useNavigate();
 
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);
@@ -34,6 +41,11 @@ const AppNavbar = () => {
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
     };
+    const logoutHandler = () => {
+        cookies.remove('token')
+        dispatch(authAction.logout())
+        navigate('/')
+    }
     return (
         <AppBar position="static">
             <Container maxWidth="xl">
@@ -41,7 +53,6 @@ const AppNavbar = () => {
                     <Typography
                         variant="h6"
                         noWrap
-                        component="a"
                         sx={{
                             mr: 2,
                             display: { xs: 'none', md: 'flex' },
@@ -94,8 +105,6 @@ const AppNavbar = () => {
                     <Typography
                         variant="h5"
                         noWrap
-                        component="a"
-                        href=""
                         sx={{
                             mr: 2,
                             display: { xs: 'flex', md: 'none' },
@@ -126,41 +135,49 @@ const AppNavbar = () => {
                     </Box>
 
                     <Box sx={{ flexGrow: 0 }}>
-                        {/* <Tooltip title="Open settings">
-                            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-                            </IconButton>
-                        </Tooltip>
-                        <Menu
-                            sx={{ mt: '45px' }}
-                            id="menu-appbar"
-                            anchorEl={anchorElUser}
-                            anchorOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                            keepMounted
-                            transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                            open={Boolean(anchorElUser)}
-                            onClose={handleCloseUserMenu}
-                        >
-                            {settings.map((setting) => (
-                                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                                    <Typography textAlign="center">{setting}</Typography>
-                                </MenuItem>
-                            ))}
-                        </Menu> */}
+                        {authStates.isAuthenticated && (
+                            <>
+                                <Tooltip title="Open settings">
+                                    <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                                        <Avatar alt={authStates.name} src={authStates.image} />
+                                    </IconButton>
+                                </Tooltip>
+                                <Menu
+                                    sx={{ mt: '45px' }}
+                                    id="menu-appbar"
+                                    anchorEl={anchorElUser}
+                                    anchorOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'right',
+                                    }}
+                                    keepMounted
+                                    transformOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'right',
+                                    }}
+                                    open={Boolean(anchorElUser)}
+                                    onClose={handleCloseUserMenu}
+                                >
+                                    {settings.map((setting) => (
+                                        <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                                            <Typography textAlign="center">{setting}</Typography>
+                                        </MenuItem>
+                                    ))}
+                                </Menu>
+                                <PrimaryBtn1 color={'error'} className={"mx-2"} onClick={logoutHandler}>logout</PrimaryBtn1>
+                            </>
+                        )}
 
-                        <Link to='/login'>
-                            <PrimaryBtn1 color={'success'} className={"mx-2"}>Login</PrimaryBtn1>
-                        </Link>
-                        <Link to='/register'>
-                            <PrimaryBtn1 color={'info'} className={"mx-2"}>Register</PrimaryBtn1>
-                        </Link>
-
+                        {!authStates.isAuthenticated && (
+                            <>
+                                <Link to='/login'>
+                                    <PrimaryBtn1 color={'success'} className={"mx-2"}>Login</PrimaryBtn1>
+                                </Link>
+                                <Link to='/register'>
+                                    <PrimaryBtn1 color={'info'} className={"mx-2"}>Register</PrimaryBtn1>
+                                </Link>
+                            </>
+                        )}
                     </Box>
                 </Toolbar>
             </Container>

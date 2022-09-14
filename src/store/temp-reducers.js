@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialTempState = {
-    username: null,
+    email: null,
     password: null,
     errorToasts: []
 };
@@ -10,7 +10,7 @@ const tempSlice = createSlice({
     initialState: initialTempState,
     reducers: {
         setCredentials(state, action) {
-            state.username = action.payload.username;
+            state.email = action.payload.email;
             state.password = action.payload.password;
         },
         addToast(state, action) {

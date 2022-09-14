@@ -3,10 +3,11 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
-import { Button, CardActionArea, CardActions } from '@mui/material';
+import { CardActions } from '@mui/material';
 import { Link } from 'react-router-dom';
-import Quantity from '../UI/quantity';
 import { useState } from 'react';
+import PrimaryBtn1 from '../UI/primary-btn';
+
 
 const BookSaleCard = (props) => {
     const [quantity, setQuantity] = useState(1)
@@ -17,6 +18,16 @@ const BookSaleCard = (props) => {
         if (quantity === 1) return;
 
         setQuantity(quantity - 1);
+    }
+    const addToCartHandler = (bookId) => {
+        if (sessionStorage.getItem('cartItems')) {
+            let items = sessionStorage.getItem('cartItems');
+            items = items + "%" + JSON.stringify({ bookId: bookId, quantity: quantity })
+            sessionStorage.setItem('cartItems', items)
+        }
+        else {
+            sessionStorage.setItem('cartItems', JSON.stringify({ bookId: bookId, quantity: quantity }))
+        }
     }
     return (
         <Card sx={{ width: 345 }} className="m-3 shadow-self">
@@ -37,9 +48,9 @@ const BookSaleCard = (props) => {
                 </CardContent>
             </Link>
             <CardActions>
-                <Button size="small" color="primary">
+                <PrimaryBtn1 size="small" color="primary" onClick={(e) => { addToCartHandler(props.data.id) }}>
                     Add to Cart
-                </Button>
+                </PrimaryBtn1>
                 <span className='btn mx-2 border-2 border-primary rounded-3 pe-1 ps-1'>
                     <span role='button' className='px-3' onClick={decreaseQuantityHandler}>-</span>
                     <span className='quantity'>{quantity}</span>
