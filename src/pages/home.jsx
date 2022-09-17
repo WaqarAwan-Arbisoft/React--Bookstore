@@ -22,11 +22,14 @@ const Home = () => {
     }, [])
     return (
         <div >
-            <h2 className="text-center my-3">Find the books that you need...!!!</h2>
+            <h2 className="text-center my-5">Find the books that you need...!!!</h2>
             <div className="container-fluid d-flex flex-wrap justify-content-center">
                 {booksList.map((book, index) => (
                     <BookSaleCard data={book} key={index} />
                 ))}
+                {booksList.length === 0 && (
+                    <h1>No Book added yet.</h1>
+                )}
 
             </div>
 

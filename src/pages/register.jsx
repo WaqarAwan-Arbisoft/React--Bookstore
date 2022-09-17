@@ -16,6 +16,7 @@ import Loader from '../components/loader';
 import { useDispatch } from 'react-redux';
 import { tempActions } from '../store/temp-reducers';
 import ErrorAlert from '../components/error-alert';
+import Countdown from 'react-countdown';
 
 const theme = createTheme();
 
@@ -90,15 +91,12 @@ export default function Register() {
         formData.append('age', age);
         const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/user/confirm-email/`, {
             method: "POST",
-            headers: {
-                'accept': 'application/json',
-            },
             body: formData
         })
         let respData;
         if (response.ok) {
             respData = await response.json();
-            dispatch(tempActions.setCredentials({ email: email, password: password }))
+            // dispatch(tempActions.setCredentials({ email: email, password: password }))
             setFormStep(2);
             setIsLoaded(true);
         }
@@ -308,7 +306,7 @@ export default function Register() {
                                             onChange={otpChangeHandler}
                                             value={otp}
                                         />
-                                        <small className='text-muted'>*The code will expire after 3 minutes.</small>
+                                        <small className='text-muted'>*The code will expire after <b className='text-danger'><Countdown date={Date.now() + 180000} /></b>.</small>
                                     </Grid>
                                     <Button
                                         type="button"

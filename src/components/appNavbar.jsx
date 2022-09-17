@@ -11,16 +11,20 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
+import Person2Icon from '@mui/icons-material/Person2';
+import Badge from '@mui/material/Badge';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import PrimaryBtn1 from '../UI/primary-btn';
 import { useDispatch, useSelector } from 'react-redux';
 import { authAction } from '../store/auth-slice';
 import Cookies from 'universal-cookie'
 
-const settings = ['Profile', 'cart', 'Logout'];
 
 const AppNavbar = () => {
     const authStates = useSelector(state => state.auth)
+    const tempStates = useSelector(state => state.temp);
+    const totalItems = tempStates.totalCartItems;
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
     const dispatch = useDispatch();
@@ -135,6 +139,11 @@ const AppNavbar = () => {
                     </Box>
 
                     <Box sx={{ flexGrow: 0 }}>
+                        <Link to='/cart'>
+                            <div className='mx-3 d-inline'>
+                                <ShoppingCartIcon />
+                            </div>
+                        </Link>
                         {authStates.isAuthenticated && (
                             <>
                                 <Tooltip title="Open settings">
@@ -158,12 +167,19 @@ const AppNavbar = () => {
                                     open={Boolean(anchorElUser)}
                                     onClose={handleCloseUserMenu}
                                 >
-                                    {settings.map((setting) => (
-                                        <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                                            <Typography textAlign="center">{setting}</Typography>
-                                        </MenuItem>
-                                    ))}
+
+                                    <MenuItem onClick={handleCloseUserMenu} className="d-flex align-items-center">
+                                        <Link to={`/user/${authStates.id}`}>
+                                            <Typography textAlign="center"><Person2Icon /> Profile</Typography>
+                                        </Link>
+                                    </MenuItem>
                                 </Menu>
+                                {/* <Typography textAlign="center">
+                                    <Badge badgeContent={4} color="primary">
+                                        <ShoppingCartIcon /> Cart
+                                    </Badge>
+                                </Typography> */}
+
                                 <PrimaryBtn1 color={'error'} className={"mx-2"} onClick={logoutHandler}>logout</PrimaryBtn1>
                             </>
                         )}
@@ -181,7 +197,7 @@ const AppNavbar = () => {
                     </Box>
                 </Toolbar>
             </Container>
-        </AppBar>
+        </AppBar >
     );
 }
 

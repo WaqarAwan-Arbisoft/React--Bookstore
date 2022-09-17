@@ -1,20 +1,18 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialTempState = {
-    email: null,
-    password: null,
-    errorToasts: []
+    errorToasts: [],
+    totalCartItems: 0
 };
 const tempSlice = createSlice({
     name: 'tempStates',
     initialState: initialTempState,
     reducers: {
-        setCredentials(state, action) {
-            state.email = action.payload.email;
-            state.password = action.payload.password;
-        },
         addToast(state, action) {
             state.errorToasts = [...state.errorToasts, action.payload];
+        },
+        setTotalCartItems(state, action) {
+            state.totalCartItems = action.payload
         }
     }
 });

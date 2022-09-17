@@ -2,7 +2,7 @@ import { Button } from "@mui/material";
 
 const PrimaryBtn1 = (props) => {
     return (
-        <Button variant="contained" color={props.color ? props.color : 'primary'} onClick={props.onClick} className={props.className}>{props.children}</Button>
+        <Button variant="contained" color={props.color ? props.color : 'primary'} onClick={props.onClick} className={props.className} disabled={props.disabled}>{props.children}</Button>
     )
 }
 

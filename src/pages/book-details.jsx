@@ -48,7 +48,7 @@ const BookDetails = () => {
                     <h1 className="text-center my-3">No book found</h1>
                 ) : (
                     <>
-                        <h1 className="text-center my-3">{book.name}</h1>
+                        <h1 className="text-center my-5">{book.name}</h1>
                         < div className="row my-5">
                             <div className="col-md-6 d-flex align-items-center justify-content-center">
                                 <img src={book.image ? book.image : 'https://via.placeholder.com/300x350'} alt="BOOK_IMAGE" />

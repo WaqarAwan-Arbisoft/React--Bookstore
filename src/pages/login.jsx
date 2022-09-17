@@ -84,6 +84,7 @@ export default function Login() {
                 console.log(userData.image)
                 dispatch(authAction.login({
                     token: token,
+                    id: userData.id,
                     email: userData.email,
                     username: userData.name,
                     image: userData.image,
