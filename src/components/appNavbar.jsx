@@ -48,7 +48,7 @@ const AppNavbar = () => {
     const logoutHandler = () => {
         cookies.remove('token')
         dispatch(authAction.logout())
-        navigate('/')
+        navigate('/');
     }
     return (
         <AppBar position="static">

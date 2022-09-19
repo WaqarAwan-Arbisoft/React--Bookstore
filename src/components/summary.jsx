@@ -1,5 +1,9 @@
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
 import PrimaryBtn1 from "../UI/primary-btn";
+import CheckoutForm from "./checkout-form";
 
+const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PROMISE_KEY);
 const Summary = (props) => {
     return (
         <div className="px-4 py-2">
@@ -15,6 +19,9 @@ const Summary = (props) => {
             <div className="text-center mt-5">
                 <PrimaryBtn1 color='success'>Process to Checkout</PrimaryBtn1>
             </div>
+            <Elements stripe={stripePromise}>
+                <CheckoutForm amount={props.data.totalPrice} reloadItems={props.fetchCartItems} reloadCartInfo={props.fetchCartInfo} />
+            </Elements>
         </div>
     )
 }

@@ -51,11 +51,6 @@ export default function Login() {
             setIsLoaded(true);
             return;
         }
-        else if (password.length <= 5) {
-            setError({ status: true, message: "Password should be at least 5 characters long." })
-            setIsLoaded(true);
-            return;
-        }
 
         const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/user/login/`, {
             method: "POST",
@@ -175,7 +170,7 @@ export default function Login() {
                                     </Button>
                                     <Grid container>
                                         <Grid item xs>
-                                            <Link to="/" variant="body2">
+                                            <Link to="/forget-password" variant="body2" className='text-primary'>
                                                 Forgot password?
                                             </Link>
                                         </Grid>

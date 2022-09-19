@@ -13,6 +13,7 @@ import { tempActions } from './store/temp-reducers';
 import Cart from './pages/cart';
 import Loader from './components/loader';
 import Profile from './pages/profile';
+import ForgetPassword from './pages/forget-password';
 
 function App() {
   const cookies = new Cookies();
@@ -77,6 +78,7 @@ function App() {
             <Route path='/login' element={<Login />} />
             <Route path='/cart' element={<Cart />} />
             <Route path='/user/:id' element={<Profile />} />
+            <Route path='/forgot-password' element={<ForgetPassword />} />
           </Routes>
         </>
       )}

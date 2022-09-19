@@ -32,6 +32,7 @@ export default function Register() {
     const [formStep, setFormStep] = useState(1);
     const [isLoaded, setIsLoaded] = useState(true);
     const [otp, setOtp] = useState('');
+    const [countDownTime, setCountDownTime] = useState(Date.now() + 180000)
 
     const nameChangeHandler = (e) => {
         setName(e.target.value);
@@ -115,7 +116,7 @@ export default function Register() {
     }
     const registerSubmitHandler = async () => {
         if (otp === '') {
-            setError({ status: true, message: "Invalid OTP entered" })
+            setError({ status: true, message: "Invalid OTP entered." })
             return;
         }
         const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/user/register/`, {
@@ -306,7 +307,7 @@ export default function Register() {
                                             onChange={otpChangeHandler}
                                             value={otp}
                                         />
-                                        <small className='text-muted'>*The code will expire after <b className='text-danger'><Countdown date={Date.now() + 180000} /></b>.</small>
+                                        <small className='text-muted'>*The code will expire after <b className='text-danger'><Countdown date={countDownTime} /></b>.</small>
                                     </Grid>
                                     <Button
                                         type="button"

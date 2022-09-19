@@ -17,6 +17,27 @@ const Cart = () => {
     const fetchCartItems = async () => {
         if (authStates.isAuthenticated) {
             let response;
+            if (sessionStorage.getItem('cartItems')) {
+                let items = sessionStorage.getItem('cartItems').split('%')
+                for (let i = 0; i < items.length; i++) {
+                    let item = JSON.parse(items[i]);
+                    const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/shop/add-to-cart/`, {
+                        method: "POST",
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Token ' + authStates.token,
+                        },
+                        body: JSON.stringify({
+                            "book": item['bookId'],
+                            "quantity": 1
+                        })
+                    })
+                    if (!response.ok) {
+                        console.log(response.statusText)
+                    }
+                }
+                sessionStorage.removeItem('cartItems');
+            }
             try {
                 response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/shop/fetch-items/`, {
                     method: "GET",
@@ -34,54 +55,8 @@ const Cart = () => {
                 setCartItems(respData.length == 0 ? [] : [...respData]);
                 setIsItemsLoaded(true);
                 dispatch(tempActions.setTotalCartItems(respData.length))
+                fetchCartInfo();
             }
-        }
-        else {
-            if (sessionStorage.getItem('cartItems')) {
-                let items = sessionStorage.getItem('cartItems').split('%')
-                let allItems = []
-                for (let i = 0; i < items.length; i++) {
-                    let item = JSON.parse(items[i])
-                    let index = -1;
-                    for (let j = 0; j < allItems.length; j++) {
-                        if (allItems[j].book.id == item.bookId) {
-                            index = j;
-                        }
-                    }
-                    if (index !== -1) {
-                        let data = allItems.pop(index)
-                        allItems.push({ "book": data.book, "quantity": data.quantity + item.quantity })
-                    }
-                    else {
-                        let response;
-                        try {
-                            response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/books/fetch-book/${item.bookId}`);
-                        }
-                        catch (err) {
-                            console.log("Server is offline");
-                        }
-                        let respData;
-                        if (response.ok) {
-                            respData = await response.json();
-                            allItems.push({ "book": respData, "quantity": item.quantity })
-                            index = -1;
-                        }
-                    }
-                }
-                if (allItems.length > 0) {
-                    setCartItems([...allItems])
-                }
-                else {
-                    setCartItems([])
-                }
-
-                setIsItemsLoaded(true);
-            }
-            else {
-                setCartItems([])
-                setIsItemsLoaded(true);
-            }
-
         }
     }
     const fetchCartInfo = async () => {
@@ -117,47 +92,47 @@ const Cart = () => {
         setIsItemsLoaded(false);
         setIsSummaryLoaded(false);
         fetchCartItems();
-        fetchCartInfo();
     }, [])
     return (
         <>
             <div className="px-5 my-5 mx-auto">
                 <h1 className="text-center">Cart Items</h1>
-                {cartItems.length == 0 && (
+                {authStates.isAuthenticated && cartItems.length == 0 && (
                     <h3 className="text-center my-4">No Item added to the cart.</h3>
                 )}
+                {!authStates.isAuthenticated && (
+                    <h3 className="text-center">Please login to see cart items and initiate purchasing.</h3>
+                )}
                 <div className="row mt-5">
-                    <div className="col-md-8">
-                        {isItemsLoaded ? (
+                    <div className="col-lg-8">
+                        {authStates.isAuthenticated && isItemsLoaded && (
                             <>
 
-                                {cartItems.length !== 0 && cartItems.map((item) => (
-                                    <CartItems fetchCartItems={fetchCartItems} fetchCartInfo={fetchCartInfo} item={item} />
+                                {cartItems.length !== 0 && cartItems.map((item, index) => (
+                                    <CartItems key={index} fetchCartItems={fetchCartItems} fetchCartInfo={fetchCartInfo} item={item} />
                                 ))}
                             </>
-                        ) : (
+                        )}
+                        {authStates.isAuthenticated && !isItemsLoaded && (
                             <div className="text-center my-4">
                                 <Loader width='100' height='100' />
                             </div>
                         )}
 
                     </div>
-                    <div className="col-md-4">
-                        {!isSummaryLoaded && (
+                    <div className="col-lg-4">
+                        {authStates.isAuthenticated && !isSummaryLoaded && (
                             <div className="text-center my-4">
                                 <Loader width='80' height='80' />
                             </div>
                         )}
-                        {isSummaryLoaded && authStates.isAuthenticated && (
+                        {isSummaryLoaded && isItemsLoaded && authStates.isAuthenticated && (
                             <>
                                 {cartItems.length !== 0 && (
-                                    <Summary data={cartData} />
+                                    <Summary data={cartData} fetchCartItems={fetchCartItems} fetchCartInfo={fetchCartInfo} />
                                 )
                                 }
                             </>
-                        )}
-                        {(isSummaryLoaded && !authStates.isAuthenticated) && (
-                            <h3>Please login for checkout summary and purchasing.</h3>
                         )}
                     </div>
                 </div>

@@ -48,6 +48,7 @@ const BookSaleCard = (props) => {
             }
             else {
                 sessionStorage.setItem('cartItems', JSON.stringify({ bookId: bookId, quantity: quantity }))
+                openToast();
             }
         }
     }
