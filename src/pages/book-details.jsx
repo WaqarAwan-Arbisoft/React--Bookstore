@@ -1,4 +1,4 @@
-import { Snackbar, Typography } from "@mui/material";
+import { Divider, Snackbar, Typography } from "@mui/material";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
@@ -7,6 +7,8 @@ import Loader from "../components/loader";
 import PrimaryBtn1 from "../UI/primary-btn";
 import MuiAlert from '@mui/material/Alert';
 import React from "react";
+import Review from "../components/review";
+import NewReview from "../components/new-review";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -18,6 +20,8 @@ const BookDetails = () => {
     const [quantity, setQuantity] = useState(1)
     const [showToast, setShowToast] = useState(false)
     const authState = useSelector(state => state.auth)
+    const [isReviewsLoaded, setIsReviewsLoaded] = useState(false);
+    const [reviews, setReviews] = useState([]);
     useEffect(() => {
         const fetchBookByName = async () => {
             let response;
@@ -36,6 +40,29 @@ const BookDetails = () => {
         }
         try {
             fetchBookByName();
+        }
+        catch (err) {
+            console.log(err)
+        }
+    }, [])
+    const fetchReviews = async () => {
+        let response;
+        try {
+            response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/shop/fetch-reviews/${id}`);
+        }
+        catch (err) {
+            console.log("server is offline")
+        }
+        let respData;
+        if (response.ok) {
+            respData = await response.json();
+            setReviews([...respData]);
+            setIsReviewsLoaded(true)
+        }
+    }
+    useEffect(() => {
+        try {
+            fetchReviews();
         }
         catch (err) {
             console.log(err)
@@ -122,6 +149,7 @@ const BookDetails = () => {
                             </div>
                         </div>
                         <div className="mt-5">
+                            <h3 className="text-center mb-3">Description</h3>
                             <Typography variant="body1" gutterBottom>
                                 {book.description}
                             </Typography>
@@ -136,6 +164,20 @@ const BookDetails = () => {
                     Item successfully added to the cart.
                 </Alert>
             </Snackbar>
+            {!authState.isAuthenticated && <h2 className="text-center my-2">
+                Please login first to give review.
+            </h2>}
+            {authState.isAuthenticated && !isReviewsLoaded ?
+                <div className="my-4 text-center">
+                    <Loader width={100} height={100} />
+                </div> :
+                <div className="my-4">
+                    {authState.isAuthenticated && <NewReview loadReviews={fetchReviews} bookId={id} />}
+                    <h3 className="text-center my-3">Reviews</h3>
+                    {reviews.map((review, index) => (
+                        <Review key={index} review={review} />
+                    ))}
+                </div>}
         </div >
     );
 }

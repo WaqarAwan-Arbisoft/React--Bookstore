@@ -29,8 +29,6 @@ const CheckoutForm = (props) => {
             card: card
         });
         let response;
-        console.log(paymentMethod)
-        console.log(error)
         if (!error) {
             try {
                 response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/shop/save-stripe-info/`, {
@@ -68,7 +66,6 @@ const CheckoutForm = (props) => {
             }
             else {
                 let respData = await response.json()
-                console.log(respData)
                 setPaymentError({ status: true, message: "An error occurred while making the payment." });
                 setIsLoaded(true);
             }

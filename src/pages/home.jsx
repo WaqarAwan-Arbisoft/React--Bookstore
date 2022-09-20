@@ -35,11 +35,11 @@ const Home = () => {
     }, [])
     const searchBookHandler = async (e) => {
 
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/books/fetch-all/?search=${e.target.value}`)
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/books/fetch-all/?search=${e.target.value}&limit=2`)
         let respData;
         if (response.ok) {
             respData = await response.json();
-            if (respData.length > 0) {
+            if (respData.results.length > 0) {
                 setBooksList(respData.results)
                 setCount(Math.ceil(respData.count / 2))
             }

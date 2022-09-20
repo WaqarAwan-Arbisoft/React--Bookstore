@@ -74,9 +74,8 @@ export default function Login() {
             })
             if (userDataResponse.ok) {
                 let userData = await userDataResponse.json();
-                console.log(userData)
                 cookie.set('token', token)
-                console.log(userData.image)
+
                 dispatch(authAction.login({
                     token: token,
                     id: userData.id,

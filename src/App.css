@@ -61,3 +61,17 @@ input[type=number] {
   border-radius: 25px;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }
+
+.star-color {
+  color: #FFDF00 !important;
+}
+
+.css-iljtu2-MuiRating-root {
+  color: #FFDF00 !important;
+}
+
+textarea {
+  outline: none;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  border-radius: 15px;
+}
