@@ -14,6 +14,8 @@ import Cart from './pages/cart';
 import Loader from './components/loader';
 import Profile from './pages/profile';
 import ForgetPassword from './pages/forget-password';
+import NewPassword from './pages/new-password';
+import NotFound404 from './pages/not-found-404';
 
 function App() {
   const cookies = new Cookies();
@@ -79,6 +81,9 @@ function App() {
             <Route path='/cart' element={<Cart />} />
             <Route path='/user/:id' element={<Profile />} />
             <Route path='/forgot-password' element={<ForgetPassword />} />
+            <Route path='/recover/:token' element={<NewPassword />} />
+            <Route path='/pageNotFound' element={<NotFound404 />} />
+            <Route path='*' element={<NotFound404 />} />
           </Routes>
         </>
       )}

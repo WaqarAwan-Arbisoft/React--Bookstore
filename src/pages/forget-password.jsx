@@ -1,4 +1,4 @@
-import EnterEmail from "../components/ForgetPassword/enterEmail"
+import EnterEmail from "../components/enterEmail"
 
 const ForgetPassword = () => {
     return (

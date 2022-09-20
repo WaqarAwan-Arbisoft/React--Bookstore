@@ -16,9 +16,6 @@ const Summary = (props) => {
                 <b>Total Quantity</b>
                 <div>{props.data.totalQty} Books</div>
             </div>
-            <div className="text-center mt-5">
-                <PrimaryBtn1 color='success'>Process to Checkout</PrimaryBtn1>
-            </div>
             <Elements stripe={stripePromise}>
                 <CheckoutForm amount={props.data.totalPrice} reloadItems={props.fetchCartItems} reloadCartInfo={props.fetchCartInfo} />
             </Elements>
