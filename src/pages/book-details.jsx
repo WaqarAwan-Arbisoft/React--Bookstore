@@ -1,4 +1,4 @@
-import { Divider, Snackbar, Typography } from "@mui/material";
+import { Chip, Divider, Snackbar, Typography } from "@mui/material";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
@@ -135,15 +135,19 @@ const BookDetails = () => {
                                         <div className="my-2">Price: <h3 className="d-inline">${book.price}</h3></div>
                                         <div className="my-2">Pages: <h3 className="d-inline">{book.noOfPages}</h3></div>
                                         <div className="my-2">Written by: <h3 className="d-inline">{book.author}</h3></div>
+                                        <div>
+                                            {book.stock > 0 && book.stock < 10 && <small className='text-muted text-danger d-block'>Only {book.stock} left in stock.</small>}
+                                        </div>
                                     </div>
-                                    <div>
+                                    {book.stock !== 0 ? <div>
                                         <PrimaryBtn1 onClick={() => { addToCartHandler(book.id) }}>Add to Cart</PrimaryBtn1>
                                         <span className='btn mx-2 border-2 border-primary rounded-3 pe-1 ps-1'>
                                             <span role='button' className='px-3' onClick={decreaseQuantityHandler}>-</span>
                                             <span className='quantity'>{quantity}</span>
                                             <span role='button' className='px-3' onClick={increaseQuantityHandler}>+</span>
                                         </span>
-                                    </div>
+                                    </div> : <Chip className="w-25" label="OUT OF STOCK" color="error" />}
+
                                 </div>
 
                             </div>
@@ -174,7 +178,8 @@ const BookDetails = () => {
                 <div className="my-4">
                     {authState.isAuthenticated && <NewReview loadReviews={fetchReviews} bookId={id} />}
                     <h3 className="text-center my-3">Reviews</h3>
-                    {reviews.map((review, index) => (
+                    {reviews.length === 0 && <h2 className="text-center">No reviews available.</h2>}
+                    {reviews.length !== 0 && reviews.map((review, index) => (
                         <Review key={index} review={review} />
                     ))}
                 </div>}

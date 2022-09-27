@@ -16,12 +16,20 @@ import Profile from './pages/profile';
 import ForgetPassword from './pages/forget-password';
 import NewPassword from './pages/new-password';
 import NotFound404 from './pages/not-found-404';
+import { gapi } from 'gapi-script';
+import RequireNonAuth from './components/requireNonAuth';
+import RequireAuth from './components/requireAuth';
+import Orders from './pages/orders';
+import { ToastContainer } from 'react-bootstrap';
+import Toast from './components/toast';
 
 function App() {
   const cookies = new Cookies();
   const dispatch = useDispatch();
   const authStates = useSelector(states => states.auth)
-  const [isLoaded, setIsLoaded] = useState(true);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const errorToasts = useSelector(state => state.temp.errorToasts);
+  const successToasts = useSelector(state => state.temp.successToasts);
 
   useEffect(() => {
     const activateSession = async (token) => {
@@ -51,8 +59,8 @@ function App() {
 
     try {
       setIsLoaded(false);
-      if (cookies.get('token')) {
-        activateSession(cookies.get('token'))
+      if (cookies.get('app_auth_token')) {
+        activateSession(cookies.get('app_auth_token'))
       }
       else {
         setIsLoaded(true);
@@ -63,6 +71,13 @@ function App() {
     }
 
   }, [])
+  gapi.load("client:auth2", () => {
+    gapi.client.init({
+      clientId:
+        "533792682925-0qr8e909spqng34b65nm49gujeu5un0h.apps.googleusercontent.com",
+      plugin_name: "auth",
+    });
+  });
   return (
     <>
       {!isLoaded && (
@@ -73,15 +88,35 @@ function App() {
       {isLoaded && (
         <>
           <AppNavbar />
+          <ToastContainer position="top-end" className="mt-5 p-3">
+            {errorToasts.map((toast, index) => (
+              <Toast key={index} show={true} message={toast.message} />
+            ))}
+          </ToastContainer>
+          <ToastContainer position="top-end" className="mt-5 p-3">
+            {successToasts.map((toast, index) => (
+              <Toast key={index} show={true} message={toast.message} bg="success" success={true} title="Success" />
+            ))}
+          </ToastContainer>
           <Routes>
             <Route path='' element={<Home />} />
             <Route path='/books/:id/:slug' element={<BookDetails />} />
-            <Route path='/register' element={<Register />} />
-            <Route path='/login' element={<Login />} />
+
+            {/* Pages that can only be accessed by Non Authenticated members */}
+            <Route element={<RequireNonAuth />}>
+              <Route path='/register' element={<Register />} />
+              <Route path='/login' element={<Login />} />
+              <Route path='/forgot-password' element={<ForgetPassword />} />
+              <Route path='/recover/:token' element={<NewPassword />} />
+            </Route>
+
+            {/* Pages that can only be accessed by Authenticated members */}
+            <Route element={<RequireAuth />}>
+              <Route path='/user/:id' element={<Profile />} />
+              <Route path='/orders' element={<Orders />} />
+            </Route>
+
             <Route path='/cart' element={<Cart />} />
-            <Route path='/user/:id' element={<Profile />} />
-            <Route path='/forgot-password' element={<ForgetPassword />} />
-            <Route path='/recover/:token' element={<NewPassword />} />
             <Route path='/pageNotFound' element={<NotFound404 />} />
             <Route path='*' element={<NotFound404 />} />
           </Routes>

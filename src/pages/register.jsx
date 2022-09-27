@@ -17,6 +17,8 @@ import { useDispatch } from 'react-redux';
 import { tempActions } from '../store/temp-reducers';
 import ErrorAlert from '../components/error-alert';
 import Countdown from 'react-countdown';
+import { GoogleLogin } from 'react-google-login';
+import GoogleIcon from '@mui/icons-material/Google';
 
 const theme = createTheme();
 
@@ -145,6 +147,10 @@ export default function Register() {
             setIsLoaded(true);
         }
     }
+    const responseGoogle = (response) => {
+        console.log(response);
+    }
+
     const tryAgainHandler = () => {
         setError({ ...error, status: false })
         setFormStep(1);
@@ -278,6 +284,14 @@ export default function Register() {
                                         >
                                             Sign Up
                                         </Button>
+                                        <GoogleLogin
+                                            clientId="533792682925-0qr8e909spqng34b65nm49gujeu5un0h.apps.googleusercontent.com"
+                                            buttonText="Login with Google"
+                                            onSuccess={responseGoogle}
+                                            onFailure={responseGoogle}
+                                            className='w-100 mb-3'
+                                            cookiePolicy={'single_host_origin'}
+                                        />
                                         <Grid container justifyContent="flex-end">
                                             <Grid item>
                                                 <Link to="/login" variant="body2" className='text-primary'>

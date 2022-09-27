@@ -6,13 +6,16 @@ import Loader from "../components/loader";
 import Summary from "../components/summary";
 import PrimaryBtn1 from "../UI/primary-btn";
 import { tempActions } from "../store/temp-reducers";
+import { Alert, Snackbar } from "@mui/material";
 
 const Cart = () => {
     const authStates = useSelector(state => state.auth)
     const [cartItems, setCartItems] = useState([])
+    const [cartItemsData, setCartItemsData] = useState([])
     const [cartData, setCartData] = useState();
     const [isItemsLoaded, setIsItemsLoaded] = useState(false);
     const [isSummaryLoaded, setIsSummaryLoaded] = useState(false);
+
     const dispatch = useDispatch();
     const fetchCartItems = async () => {
         if (authStates.isAuthenticated) {
@@ -52,12 +55,20 @@ const Cart = () => {
             let respData;
             if (response.ok) {
                 respData = await response.json();
+                maintainCartItemData(respData);
                 setCartItems(respData.length == 0 ? [] : [...respData]);
                 setIsItemsLoaded(true);
                 dispatch(tempActions.setTotalCartItems(respData.length))
                 fetchCartInfo();
             }
         }
+    }
+    const maintainCartItemData = (data) => {
+        let booksData = []
+        for (let item of data) {
+            booksData.push({ "book": item.book.id, "quantity": item.quantity })
+        }
+        setCartItemsData(booksData)
     }
     const fetchCartInfo = async () => {
         if (authStates.isAuthenticated) {
@@ -88,11 +99,47 @@ const Cart = () => {
             setIsSummaryLoaded(true)
         }
     }
+    const checkStock = () => {
+
+        return fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/shop/check-stock/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Token ' + authStates.token
+            },
+            body: JSON.stringify({
+                "items": cartItemsData
+            })
+        })
+    }
+    const updateStockAfterPurchase = async () => {
+        let response;
+        response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/shop/purchase-from-stock/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Token ' + authStates.token
+            },
+            body: JSON.stringify({
+                "items": cartItemsData
+            })
+        })
+
+        if (response.ok) {
+            setCartItemsData([])
+            fetchCartItems()
+            fetchCartInfo()
+        }
+        else {
+            console.log("An error occurred")
+        }
+    }
     useEffect(() => {
         setIsItemsLoaded(false);
         setIsSummaryLoaded(false);
         fetchCartItems();
     }, [])
+
     return (
         <>
             <div className="px-5 my-5 mx-auto">
@@ -129,7 +176,7 @@ const Cart = () => {
                         {isSummaryLoaded && isItemsLoaded && authStates.isAuthenticated && (
                             <>
                                 {cartItems.length !== 0 && (
-                                    <Summary data={cartData} fetchCartItems={fetchCartItems} fetchCartInfo={fetchCartInfo} />
+                                    <Summary data={cartData} checkStock={checkStock} fetchCartItems={fetchCartItems} fetchCartInfo={fetchCartInfo} updateCart={updateStockAfterPurchase} />
                                 )
                                 }
                             </>

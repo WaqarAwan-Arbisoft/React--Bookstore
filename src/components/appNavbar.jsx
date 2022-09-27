@@ -46,7 +46,7 @@ const AppNavbar = () => {
         setAnchorElUser(null);
     };
     const logoutHandler = () => {
-        cookies.remove('token')
+        cookies.remove('app_auth_token')
         dispatch(authAction.logout())
         navigate('/');
     }
@@ -135,6 +135,20 @@ const AppNavbar = () => {
                             </Button>
 
                         </Link>
+                        {authStates.isAuthenticated ? (
+                            <>
+                                <Link to='/orders'>
+
+                                    <Button
+                                        onClick={handleCloseNavMenu}
+                                        sx={{ my: 2, color: 'white', display: 'block' }}
+                                    >
+                                        Orders
+                                    </Button>
+
+                                </Link>
+                            </>
+                        ) : ''}
 
                     </Box>
 
@@ -174,12 +188,6 @@ const AppNavbar = () => {
                                         </Link>
                                     </MenuItem>
                                 </Menu>
-                                {/* <Typography textAlign="center">
-                                    <Badge badgeContent={4} color="primary">
-                                        <ShoppingCartIcon /> Cart
-                                    </Badge>
-                                </Typography> */}
-
                                 <PrimaryBtn1 color={'error'} className={"mx-2"} onClick={logoutHandler}>logout</PrimaryBtn1>
                             </>
                         )}

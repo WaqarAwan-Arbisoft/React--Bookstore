@@ -23,7 +23,6 @@ const Home = () => {
                     setBooksList([])
                     setCount(0)
                 }
-
             }
         }
         try {

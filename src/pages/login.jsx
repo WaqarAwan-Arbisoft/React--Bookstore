@@ -22,7 +22,7 @@ import Cookies from 'universal-cookie';
 const theme = createTheme();
 
 export default function Login() {
-    const cookie = new Cookies();
+    const cookies = new Cookies();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState({ status: false, message: '' });
@@ -74,8 +74,7 @@ export default function Login() {
             })
             if (userDataResponse.ok) {
                 let userData = await userDataResponse.json();
-                cookie.set('token', token)
-
+                cookies.set('app_auth_token', token)
                 dispatch(authAction.login({
                     token: token,
                     id: userData.id,

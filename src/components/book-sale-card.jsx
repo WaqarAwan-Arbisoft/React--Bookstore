@@ -3,7 +3,7 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
-import { CardActions, Snackbar } from '@mui/material';
+import { CardActions, Chip, Snackbar } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import PrimaryBtn1 from '../UI/primary-btn';
@@ -76,14 +76,15 @@ const BookSaleCard = (props) => {
                         <Typography variant="body2" color="text.secondary">
                             <b>Price: </b>${props.data.price}
                         </Typography>
+                        <Typography variant="body2" color="text.secondary" className='mt-1'>
+                            {props.data.stock > 0 && props.data.stock < 10 && <small className='text-muted text-danger d-block'>Only {props.data.stock} left in stock.</small>}
+                        </Typography>
                     </CardContent>
                 </Link>
                 <CardActions>
-
-                    <PrimaryBtn1 size="small" color="primary" onClick={(e) => { addToCartHandler(props.data.id) }}>
+                    {props.data.stock === 0 ? <Chip label="OUT OF STOCK" color="error" /> : <PrimaryBtn1 size="small" color="primary" onClick={(e) => { addToCartHandler(props.data.id) }}>
                         Add to Cart
-                    </PrimaryBtn1>
-
+                    </PrimaryBtn1>}
                 </CardActions>
             </Card>
             <Snackbar open={showToast} autoHideDuration={800} onClose={handleToastClose}>
