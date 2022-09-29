@@ -1,31 +1,35 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 import Loader from "../components/loader";
 import UserProfileInfo from "../components/user-profile-info";
 
 const Profile = () => {
     const authStates = useSelector(states => states.auth)
     const [user, setUser] = useState(null);
-    const [isLoaded, setIsLoaded] = useState(false)
+    const [isLoaded, setIsLoaded] = useState(false);
+    const [isSelfProfile, setIsSelfProfile] = useState(false);
+    const id = useParams().id
     const fetchUser = async () => {
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/user/fetch-user/`, {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/user/fetch-user/${id}/`, {
             method: "GET",
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Token ${authStates.token}`
+                'Content-Type': 'application/json'
             }
         })
         if (response.ok) {
             let respData = await response.json();
+            setIsSelfProfile(authStates.id === respData.id)
             setUser(respData)
+            setIsLoaded(true)
+        }
+        else {
+            setUser(null)
             setIsLoaded(true)
         }
     }
     useEffect(() => {
-        if (authStates.isAuthenticated) {
-            fetchUser();
-        }
-
+        fetchUser();
     }, [])
     return (
         <>
@@ -34,10 +38,16 @@ const Profile = () => {
                     <Loader width="180" height="180" />
                 </div>
             )}
-            {isLoaded && (
+            {isLoaded && user && (
                 <div className="mx-auto container my-5">
-                    <UserProfileInfo fetchUser={fetchUser} user={user} />
+                    <UserProfileInfo isSelfProfile={isSelfProfile} fetchUser={fetchUser} user={user} />
                 </div>
+            )
+            }
+            {isLoaded && !user && (
+                <h1 className="text-center m-5">
+                    No user exists.
+                </h1>
             )
             }
         </>

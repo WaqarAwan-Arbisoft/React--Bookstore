@@ -147,6 +147,26 @@ const AppNavbar = () => {
                                     </Button>
 
                                 </Link>
+                                <Link to='/feed'>
+
+                                    <Button
+                                        onClick={handleCloseNavMenu}
+                                        sx={{ my: 2, color: 'white', display: 'block' }}
+                                    >
+                                        Feed
+                                    </Button>
+
+                                </Link>
+                                <Link to='/requests'>
+
+                                    <Button
+                                        onClick={handleCloseNavMenu}
+                                        sx={{ my: 2, color: 'white', display: 'block' }}
+                                    >
+                                        Requests
+                                    </Button>
+
+                                </Link>
                             </>
                         ) : ''}
 

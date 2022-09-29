@@ -9,6 +9,8 @@ import MuiAlert from '@mui/material/Alert';
 import React from "react";
 import Review from "../components/review";
 import NewReview from "../components/new-review";
+import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 
 const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -22,6 +24,7 @@ const BookDetails = () => {
     const authState = useSelector(state => state.auth)
     const [isReviewsLoaded, setIsReviewsLoaded] = useState(false);
     const [reviews, setReviews] = useState([]);
+    const [isFavorite, setIsFavorite] = useState(false)
     useEffect(() => {
         const fetchBookByName = async () => {
             let response;
@@ -48,7 +51,12 @@ const BookDetails = () => {
     const fetchReviews = async () => {
         let response;
         try {
-            response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/shop/fetch-reviews/${id}`);
+            response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/shop/fetch-reviews/${id}/`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
         }
         catch (err) {
             console.log("server is offline")
@@ -59,10 +67,29 @@ const BookDetails = () => {
             setReviews([...respData]);
             setIsReviewsLoaded(true)
         }
+        else {
+            setReviews([]);
+            setIsReviewsLoaded(true)
+        }
+    }
+    const checkIsFavorite = async () => {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/shop/is-favorite/${id}/`, {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Token ' + authState.token,
+            }
+        })
+        if (response.ok) {
+            setIsFavorite(true)
+        }
     }
     useEffect(() => {
         try {
             fetchReviews();
+            if (authState.isAuthenticated) {
+                checkIsFavorite();
+            }
         }
         catch (err) {
             console.log(err)
@@ -117,6 +144,32 @@ const BookDetails = () => {
     const handleToastClose = () => {
         setShowToast(false)
     }
+
+    const addToFavoriteHandler = async (bookId) => {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/shop/add-to-favorite/${bookId}/`, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Token ' + authState.token,
+            }
+        })
+        if (response.ok) {
+            setIsFavorite(true)
+        }
+
+    }
+    const removeFromFavoriteHandler = async (bookId) => {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/shop/remove-favorite/${bookId}/`, {
+            method: "DELETE",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Token ' + authState.token,
+            }
+        })
+        if (response.ok) {
+            setIsFavorite(false)
+        }
+    }
     return (
         <div className="container mx-auto">
             {isBookLoaded ?
@@ -128,8 +181,10 @@ const BookDetails = () => {
                         < div className="row my-5">
                             <div className="col-md-6 d-flex align-items-center justify-content-center">
                                 <img src={book.image ? book.image : 'https://via.placeholder.com/300x350'} alt="BOOK_IMAGE" width={300} />
+
                             </div>
                             <div className="col-md-6">
+
                                 <div className="d-flex flex-column justify-content-between h-100">
                                     <div>
                                         <div className="my-2">Price: <h3 className="d-inline">${book.price}</h3></div>
@@ -137,6 +192,11 @@ const BookDetails = () => {
                                         <div className="my-2">Written by: <h3 className="d-inline">{book.author}</h3></div>
                                         <div>
                                             {book.stock > 0 && book.stock < 10 && <small className='text-muted text-danger d-block'>Only {book.stock} left in stock.</small>}
+                                        </div>
+                                        <div className="my-3">
+                                            {!isFavorite && <PrimaryBtn1 color="success" onClick={() => { addToFavoriteHandler(book.id) }}>Add To Favorite&nbsp;<CheckCircleOutlinedIcon /></PrimaryBtn1>}
+                                            {isFavorite && <PrimaryBtn1 color="error" onClick={() => { removeFromFavoriteHandler(book.id) }}>Remove from favorite&nbsp;<HighlightOffIcon /></PrimaryBtn1>}
+
                                         </div>
                                     </div>
                                     {book.stock !== 0 ? <div>
@@ -147,7 +207,6 @@ const BookDetails = () => {
                                             <span role='button' className='px-3' onClick={increaseQuantityHandler}>+</span>
                                         </span>
                                     </div> : <Chip className="w-25" label="OUT OF STOCK" color="error" />}
-
                                 </div>
 
                             </div>

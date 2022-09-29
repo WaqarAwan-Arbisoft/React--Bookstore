@@ -5,8 +5,10 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import PrimaryBtn1 from '../UI/primary-btn';
 import ErrorAlert from './error-alert';
+import PersonAddOutlinedIcon from '@mui/icons-material/PersonAddOutlined';
 
 const UserProfileInfo = (props) => {
+    const { isSelfProfile } = props;
     const [isEditing, setIsEditing] = useState(false);
     const [name, setName] = useState(props.user.name)
     const [password, setPassword] = useState(props.user.password)
@@ -15,7 +17,7 @@ const UserProfileInfo = (props) => {
     const [profileImage, setProfileImage] = useState(props.user.image);
     const [error, setError] = useState({ status: false, message: '' });
     const [image, setImage] = useState(props.user.image);
-    const [isImageChanged, setIsImageChanged] = useState(false)
+    const [isImageChanged, setIsImageChanged] = useState(false);
     const authStates = useSelector(states => states.auth);
     const onImageChangeHandler = (e) => {
         const file = e.target.files[0];
@@ -172,23 +174,32 @@ const UserProfileInfo = (props) => {
                         value={age}
                     />}
                 </div>
-                <div className="fs-4 mt-3">
-                    <b>Role:</b>
-                    <div className="container">{props.user.is_staff === false ? 'User' : 'Administrator'}</div>
-                </div>
-                <div className='my-3 d-flex justify-content-center'>
-                    {!isEditing && <PrimaryBtn1 color={'success'} onClick={toggleForm}>Edit Profile</PrimaryBtn1>}
-                    {isEditing &&
-                        <div className='text-center'>
-                            <div className='my-2'>
-                                <PrimaryBtn1 onClick={saveChangeHandler}>Save Changes</PrimaryBtn1>
-                            </div>
-                            <div className='my-2'>
-                                <PrimaryBtn1 onClick={() => { setIsEditing(false) }} color='error'>Back</PrimaryBtn1>
-                            </div>
-                        </div>}
+                {isSelfProfile && (
+                    <div className="fs-4 mt-3">
+                        <b>Role:</b>
+                        <div className="container">{authStates.admin === false ? 'User' : 'Administrator'}</div>
+                    </div>
+                )}
+                {isSelfProfile ? (
+                    <div className='my-3 d-flex justify-content-center'>
+                        {!isEditing && <PrimaryBtn1 color={'success'} onClick={toggleForm}>Edit Profile</PrimaryBtn1>}
+                        {isEditing &&
+                            <div className='text-center'>
+                                <div className='my-2'>
+                                    <PrimaryBtn1 onClick={saveChangeHandler}>Save Changes</PrimaryBtn1>
+                                </div>
+                                <div className='my-2'>
+                                    <PrimaryBtn1 onClick={() => { setIsEditing(false) }} color='error'>Back</PrimaryBtn1>
+                                </div>
+                            </div>}
 
-                </div>
+                    </div>
+                ) : (
+                    <div className='my-3 d-flex justify-content-center'>
+                        <PrimaryBtn1 color={'success'} onClick={toggleForm}>Add as Friend &nbsp;<PersonAddOutlinedIcon /></PrimaryBtn1>
+                    </div>
+                )}
+
             </div>
         </div>
     )

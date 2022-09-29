@@ -22,6 +22,8 @@ import RequireAuth from './components/requireAuth';
 import Orders from './pages/orders';
 import { ToastContainer } from 'react-bootstrap';
 import Toast from './components/toast';
+import Feed from './pages/feed';
+import FriendRequests from './pages/friend-requests';
 
 function App() {
   const cookies = new Cookies();
@@ -112,11 +114,13 @@ function App() {
 
             {/* Pages that can only be accessed by Authenticated members */}
             <Route element={<RequireAuth />}>
-              <Route path='/user/:id' element={<Profile />} />
               <Route path='/orders' element={<Orders />} />
+              <Route path='/feed' element={<Feed />} />
+              <Route path='/requests' element={<FriendRequests />} />
             </Route>
 
             <Route path='/cart' element={<Cart />} />
+            <Route path='/user/:id' element={<Profile />} />
             <Route path='/pageNotFound' element={<NotFound404 />} />
             <Route path='*' element={<NotFound404 />} />
           </Routes>
