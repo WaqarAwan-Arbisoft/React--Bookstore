@@ -24,6 +24,7 @@ import { ToastContainer } from 'react-bootstrap';
 import Toast from './components/toast';
 import Feed from './pages/feed';
 import FriendRequests from './pages/friend-requests';
+import LandingPage from './pages/landing-page';
 
 function App() {
   const cookies = new Cookies();
@@ -101,7 +102,8 @@ function App() {
             ))}
           </ToastContainer>
           <Routes>
-            <Route path='' element={<Home />} />
+            <Route path='' element={<LandingPage />} />
+            <Route path='/books' element={<Home />} />
             <Route path='/books/:id/:slug' element={<BookDetails />} />
 
             {/* Pages that can only be accessed by Non Authenticated members */}

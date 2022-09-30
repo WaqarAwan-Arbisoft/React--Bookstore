@@ -101,7 +101,7 @@ const AppNavbar = () => {
                                 display: { xs: 'block', md: 'none' },
                             }}
                         >
-                            <Link to='/' onClick={handleCloseNavMenu}>
+                            <Link to='/books' onClick={handleCloseNavMenu}>
                                 <Typography textAlign="center" className='p-2'>Books</Typography>
                             </Link>
                         </Menu>
@@ -125,7 +125,7 @@ const AppNavbar = () => {
                         </Link>
                     </Typography>
                     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-                        <Link to='/'>
+                        <Link to='/books'>
 
                             <Button
                                 onClick={handleCloseNavMenu}

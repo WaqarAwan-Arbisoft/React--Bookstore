@@ -4,6 +4,8 @@ import { useSelector } from "react-redux";
 import Loader from "../components/loader";
 import NotificationCard from "../components/notification-card";
 import RequestCard from "../components/request-card";
+import SearchUserModal from "../components/search-user-modal";
+import PrimaryBtn1 from "../UI/primary-btn";
 
 const FriendRequests = () => {
     const authStates = useSelector(states => states.auth)
@@ -11,7 +13,13 @@ const FriendRequests = () => {
     const [requestsLoaded, setRequestsLoaded] = useState(false)
     const [notificationLoaded, setNotificationLoaded] = useState(false)
     const [notifications, setNotifications] = useState([])
-
+    const [modalOpen, setModalOpen] = useState(false);
+    const handleModalClose = () => {
+        setModalOpen(false)
+    }
+    const handleModalOpen = () => {
+        setModalOpen(true)
+    }
 
     const fetchFriendRequests = async () => {
         const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/social/fetch-friend-requests/`, {
@@ -49,14 +57,46 @@ const FriendRequests = () => {
             setNotificationLoaded(true)
         }
     }
+    const acceptRequest = async (userId) => {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/social/accept-request/`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Token ' + authStates.token
+            },
+            body: JSON.stringify({
+                initiatedBy: userId
+            })
+        });
+        if (response.ok) {
+            let respData = await response.json()
+            fetchFriendRequests()
+        }
+    }
+    const declineRequest = async (userId) => {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/social/remove-request/${userId}/`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Token ' + authStates.token
+            }
+        });
+        if (response.ok) {
+            fetchFriendRequests()
+        }
+    }
     useEffect(() => {
         fetchFriendRequests();
         fetchFriendshipNotification()
     }, [])
     return (
         <>
+            <SearchUserModal open={modalOpen} handleClose={handleModalClose} />
             <div className="p-4">
                 <h1 className="text-center my-4">Requests</h1>
+                <div className="text-center m-4">
+                    <PrimaryBtn1 onClick={handleModalOpen}>Search User</PrimaryBtn1>
+                </div>
                 {!requestsLoaded &&
                     <div className="text-center m-5">
                         <Loader width="100" height="100" />
@@ -66,9 +106,8 @@ const FriendRequests = () => {
                     {(requestsLoaded && requests.length > 0) &&
                         <>
                             {requests.map((request, index) => (
-                                <RequestCard key={index} request={request} />
+                                <RequestCard key={index} request={request} acceptRequest={acceptRequest} declineRequest={declineRequest} />
                             ))}
-
                         </>
                     }
                 </div>

@@ -11,6 +11,8 @@ import Review from "../components/review";
 import NewReview from "../components/new-review";
 import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 
 const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -24,7 +26,8 @@ const BookDetails = () => {
     const authState = useSelector(state => state.auth)
     const [isReviewsLoaded, setIsReviewsLoaded] = useState(false);
     const [reviews, setReviews] = useState([]);
-    const [isFavorite, setIsFavorite] = useState(false)
+    const [isFavorite, setIsFavorite] = useState(false);
+    const [isLiked, setIsLiked] = useState(false);
     useEffect(() => {
         const fetchBookByName = async () => {
             let response;
@@ -84,11 +87,24 @@ const BookDetails = () => {
             setIsFavorite(true)
         }
     }
+    const checkIsLiked = async () => {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/shop/is-liked/${id}/`, {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Token ' + authState.token,
+            }
+        })
+        if (response.ok) {
+            setIsLiked(true)
+        }
+    }
     useEffect(() => {
         try {
             fetchReviews();
             if (authState.isAuthenticated) {
                 checkIsFavorite();
+                checkIsLiked();
             }
         }
         catch (err) {
@@ -170,6 +186,30 @@ const BookDetails = () => {
             setIsFavorite(false)
         }
     }
+    const likeBookHandler = async (bookId) => {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/shop/like-book/${bookId}/`, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Token ' + authState.token,
+            }
+        })
+        if (response.ok) {
+            setIsLiked(true)
+        }
+    }
+    const unlikeBookHandler = async (bookId) => {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/shop/remove-like/${bookId}/`, {
+            method: "DELETE",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Token ' + authState.token,
+            }
+        })
+        if (response.ok) {
+            setIsLiked(false)
+        }
+    }
     return (
         <div className="container mx-auto">
             {isBookLoaded ?
@@ -193,11 +233,20 @@ const BookDetails = () => {
                                         <div>
                                             {book.stock > 0 && book.stock < 10 && <small className='text-muted text-danger d-block'>Only {book.stock} left in stock.</small>}
                                         </div>
-                                        <div className="my-3">
-                                            {!isFavorite && <PrimaryBtn1 color="success" onClick={() => { addToFavoriteHandler(book.id) }}>Add To Favorite&nbsp;<CheckCircleOutlinedIcon /></PrimaryBtn1>}
-                                            {isFavorite && <PrimaryBtn1 color="error" onClick={() => { removeFromFavoriteHandler(book.id) }}>Remove from favorite&nbsp;<HighlightOffIcon /></PrimaryBtn1>}
+                                        {authState.isAuthenticated && (
+                                            <>
+                                                <div className="my-3">
+                                                    {!isFavorite && <PrimaryBtn1 color="success" onClick={() => { addToFavoriteHandler(book.id) }}>Add To Favorite&nbsp;<CheckCircleOutlinedIcon /></PrimaryBtn1>}
+                                                    {isFavorite && <PrimaryBtn1 color="error" onClick={() => { removeFromFavoriteHandler(book.id) }}>Remove from favorite&nbsp;<HighlightOffIcon /></PrimaryBtn1>}
 
-                                        </div>
+                                                </div>
+                                                <div className="my-3 d-flex">
+                                                    {!isLiked && <PrimaryBtn1 color="success" onClick={() => { likeBookHandler(book.id) }}>Like&nbsp;<ThumbUpIcon fontSize="40" /></PrimaryBtn1>}
+                                                    {isLiked && <PrimaryBtn1 color="error" onClick={() => { unlikeBookHandler(book.id) }}>Unlike&nbsp;<ThumbDownIcon fontSize="40" /></PrimaryBtn1>}
+
+                                                </div>
+                                            </>
+                                        )}
                                     </div>
                                     {book.stock !== 0 ? <div>
                                         <PrimaryBtn1 onClick={() => { addToCartHandler(book.id) }}>Add to Cart</PrimaryBtn1>

@@ -9,8 +9,8 @@ const RequestCard = (props) => {
                 <Link className="text-primary" to={'/user/' + request.initiatedBy.id}>{request.initiatedBy.name}</Link> has sent a friend request to you.
             </div>
             <div className="col-md-3">
-                <PrimaryBtn1 color="success" className='mx-2'>Accept</PrimaryBtn1>
-                <PrimaryBtn1 color="error" className='mx-2'>Decline</PrimaryBtn1>
+                <PrimaryBtn1 color="success" className='mx-2' onClick={() => { props.acceptRequest(request.initiatedBy.id) }}>Accept</PrimaryBtn1>
+                <PrimaryBtn1 color="error" className='mx-2' onClick={() => { props.declineRequest(request.initiatedBy.id) }}>Decline</PrimaryBtn1>
             </div>
         </div>
     )

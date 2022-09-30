@@ -3,7 +3,6 @@ import StarIcon from '@mui/icons-material/Star';
 
 const FeedCard = (props) => {
     const { feed } = props;
-    console.log(feed)
     return (
         <div className="shadow-self p-4 rounded-3 my-4">
             <div>
@@ -35,6 +34,20 @@ const FeedCard = (props) => {
                 {feed.favorite && (
                     <>
                         <span>marked <Link className="text-primary" to={'/books/' + feed.book.id + '/' + feed.book.name + '/'}>{feed.book.name}</Link> as favorite.</span>
+                        <div className="row my-4">
+                            <div className="col-md-3">
+                                <img src={feed.book.image} alt="BOOK_IMAGE" width={100} />
+                            </div>
+                            <div className="col-md-9">
+                                <div><b>Name: </b>{feed.book.name}</div>
+                                <div><b>Price: </b>{feed.book.price}</div>
+                            </div>
+                        </div>
+                    </>
+                )}
+                {feed.like && (
+                    <>
+                        <span>liked <Link className="text-primary" to={'/books/' + feed.book.id + '/' + feed.book.name + '/'}>{feed.book.name}</Link></span>
                         <div className="row my-4">
                             <div className="col-md-3">
                                 <img src={feed.book.image} alt="BOOK_IMAGE" width={100} />

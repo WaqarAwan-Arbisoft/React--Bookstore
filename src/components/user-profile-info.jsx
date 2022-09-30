@@ -6,6 +6,9 @@ import { useSelector } from 'react-redux';
 import PrimaryBtn1 from '../UI/primary-btn';
 import ErrorAlert from './error-alert';
 import PersonAddOutlinedIcon from '@mui/icons-material/PersonAddOutlined';
+import ScheduleSendIcon from '@mui/icons-material/ScheduleSend';
+import NotInterestedIcon from '@mui/icons-material/NotInterested';
+import { useEffect } from 'react';
 
 const UserProfileInfo = (props) => {
     const { isSelfProfile } = props;
@@ -19,6 +22,9 @@ const UserProfileInfo = (props) => {
     const [image, setImage] = useState(props.user.image);
     const [isImageChanged, setIsImageChanged] = useState(false);
     const authStates = useSelector(states => states.auth);
+    const [isRequestSent, setIsRequestSent] = useState(false);
+    const [isFriend, setIsFriend] = useState(false);
+    const [isInitiator, setIsInitiator] = useState()
     const onImageChangeHandler = (e) => {
         const file = e.target.files[0];
         setImage(file);
@@ -89,6 +95,112 @@ const UserProfileInfo = (props) => {
         }
 
     }
+
+    const addAsFriendHandler = async (userId) => {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/social/add-as-friend/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Token ' + authStates.token
+            },
+            body: JSON.stringify({
+                initiatedTowards: userId
+            })
+        })
+        if (response.ok) {
+            setIsRequestSent(true);
+            setIsFriend(false);
+        }
+    }
+    const removeFromFriendsHandler = async (userId) => {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/social/remove-friend/${userId}/`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Token ' + authStates.token
+            }
+        })
+        if (response.ok) {
+            setIsRequestSent(false);
+            setIsFriend(false);
+        }
+    }
+    const removeRequestHandler = async (userId) => {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/social/remove-request/${userId}/`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Token ' + authStates.token
+            }
+        })
+        if (response.ok) {
+            setIsRequestSent(false);
+            setIsFriend(false);
+        }
+    }
+    const requestAcceptHandler = async (userId) => {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/social/accept-request/`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Token ' + authStates.token
+            },
+            body: JSON.stringify({
+                initiatedBy: userId
+            })
+        })
+        if (response.ok) {
+            setIsFriend(true);
+        }
+    }
+    const checkIfFriends = async () => {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/social/is-friend/${props.id}/`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Token ' + authStates.token
+            }
+        })
+        if (response.ok) {
+            let respData = await response.json()
+            setIsFriend(true);
+            if (respData.initiatedBy === authStates.id) {
+                setIsInitiator(true)
+            }
+            else {
+                setIsInitiator(false)
+            }
+        }
+        else {
+            setIsFriend(false);
+            checkIfRequestSent();
+        }
+    }
+    const checkIfRequestSent = async () => {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/social/is-request-sent/${props.id}/`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Token ' + authStates.token
+            }
+        })
+        if (response.ok) {
+            let respData = await response.json()
+            setIsRequestSent(true);
+            if (respData.initiatedBy === authStates.id) {
+                setIsInitiator(true)
+            }
+            else {
+                setIsInitiator(false)
+            }
+        }
+        else {
+            setIsRequestSent(false);
+        }
+    }
+    useEffect(() => {
+        checkIfFriends();
+    }, [])
     return (
         <div className="user-profile-info-card">
             <div className="text-center">
@@ -196,7 +308,21 @@ const UserProfileInfo = (props) => {
                     </div>
                 ) : (
                     <div className='my-3 d-flex justify-content-center'>
-                        <PrimaryBtn1 color={'success'} onClick={toggleForm}>Add as Friend &nbsp;<PersonAddOutlinedIcon /></PrimaryBtn1>
+                        {isFriend && (
+                            <PrimaryBtn1 color={'error'} onClick={() => { removeFromFriendsHandler(props.id) }}>Remove from Friend &nbsp;<NotInterestedIcon /></PrimaryBtn1>
+                        )}
+                        {!isFriend && isRequestSent && (
+                            <>
+                                {isInitiator ? (
+                                    <PrimaryBtn1 color={'success'} onClick={() => { removeRequestHandler(props.id) }}>Friend Request Sent &nbsp;<ScheduleSendIcon /></PrimaryBtn1>
+                                ) : (
+                                    <PrimaryBtn1 color={'success'} onClick={() => { requestAcceptHandler(props.id) }}>Accept &nbsp;<ScheduleSendIcon /></PrimaryBtn1>
+                                )}
+                            </>
+                        )}
+                        {!isFriend && !isRequestSent && (
+                            <PrimaryBtn1 color={'success'} onClick={() => { addAsFriendHandler(props.id) }}>Add as Friend &nbsp;<PersonAddOutlinedIcon /></PrimaryBtn1>
+                        )}
                     </div>
                 )}
 

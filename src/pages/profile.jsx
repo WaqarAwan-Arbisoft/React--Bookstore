@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import Loader from "../components/loader";
 import UserProfileInfo from "../components/user-profile-info";
+import PrimaryBtn1 from "../UI/primary-btn";
 
 const Profile = () => {
     const authStates = useSelector(states => states.auth)
@@ -29,6 +30,7 @@ const Profile = () => {
         }
     }
     useEffect(() => {
+        setIsLoaded(false)
         fetchUser();
     }, [])
     return (
@@ -40,7 +42,7 @@ const Profile = () => {
             )}
             {isLoaded && user && (
                 <div className="mx-auto container my-5">
-                    <UserProfileInfo isSelfProfile={isSelfProfile} fetchUser={fetchUser} user={user} />
+                    <UserProfileInfo isSelfProfile={isSelfProfile} fetchUser={fetchUser} user={user} id={id} />
                 </div>
             )
             }
