@@ -25,6 +25,7 @@ import Toast from './components/toast';
 import Feed from './pages/feed';
 import FriendRequests from './pages/friend-requests';
 import LandingPage from './pages/landing-page';
+import Favorites from './pages/favorites';
 
 function App() {
   const cookies = new Cookies();
@@ -119,6 +120,7 @@ function App() {
               <Route path='/orders' element={<Orders />} />
               <Route path='/feed' element={<Feed />} />
               <Route path='/requests' element={<FriendRequests />} />
+              <Route path='/favorites' element={<Favorites />} />
             </Route>
 
             <Route path='/cart' element={<Cart />} />

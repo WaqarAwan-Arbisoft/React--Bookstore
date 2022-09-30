@@ -62,7 +62,7 @@ const BookSaleCard = (props) => {
     return (
         <>
             <Card sx={{ width: 345 }} className="m-3 shadow-self">
-                <Link to={'books/' + props.data.id + '/' + props.data.name}>
+                <Link to={props.data.id + '/' + props.data.name}>
                     <CardMedia
                         component="img"
                         height="400"

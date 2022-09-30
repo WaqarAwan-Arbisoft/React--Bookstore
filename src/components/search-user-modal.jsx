@@ -1,18 +1,20 @@
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
-import { InputAdornment, TextField } from '@mui/material';
+import { InputAdornment, Pagination, TextField } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import SearchedUserCard from './searched-user-card';
+import { USER_SEARCH_LIMIT } from '../constant/paginations';
 
 
 const SearchUserModal = (props) => {
     const [users, setUsers] = useState([])
+    const [count, setCount] = useState(0);
     const authStates = useSelector(states => states.auth)
     const searchUserHandler = async (e) => {
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/user/fetch-all/?search=${e === undefined ? '' : e.target.value}`, {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/user/fetch-all/?search=${e === undefined ? '' : e.target.value}&limit=${USER_SEARCH_LIMIT}`, {
             method: "GET",
             headers: {
                 'Authorization': 'Token ' + authStates.token,
@@ -21,13 +23,38 @@ const SearchUserModal = (props) => {
         })
         if (response.ok) {
             let respData = await response.json();
-            setUsers([...respData])
+            setUsers([...respData.results])
+            setCount(Math.ceil(respData.count / USER_SEARCH_LIMIT))
+        }
+        else {
+            setUsers([])
+            setCount(0)
         }
 
     }
     useEffect(() => {
         searchUserHandler();
     }, [])
+
+    const paginationHandler = async (e) => {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/user/fetch-all/?offset=${USER_SEARCH_LIMIT * (parseInt(e.target.innerText) - 1)}`, {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Token ' + authStates.token
+            }
+        })
+        let respData;
+        if (response.ok) {
+            respData = await response.json();
+            setUsers([...respData.results])
+            setCount(Math.ceil(respData.count / USER_SEARCH_LIMIT))
+        }
+        else {
+            setUsers([...respData.results])
+            setCount(0)
+        }
+    }
     return (
         <Modal
 
@@ -60,6 +87,12 @@ const SearchUserModal = (props) => {
                 {users.map((user) => (
                     <SearchedUserCard key={user.id} user={user} />
                 ))}
+                {users.length === 0 && <h3 className='text-muted text-center my-3'>
+                    No user found.
+                </h3>}
+                <div className="d-flex justify-content-center my-4">
+                    {count !== 0 && <Pagination hideNextButton={true} hidePrevButton={true} count={count} onClick={paginationHandler} />}
+                </div>
             </Modal.Body>
             <Modal.Footer>
                 <Button onClick={props.handleClose}>Close</Button>

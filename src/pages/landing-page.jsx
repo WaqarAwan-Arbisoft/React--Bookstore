@@ -35,7 +35,7 @@ const LandingPage = () => {
             <div className="hero-image">
                 <div className="container mx-auto row align-items-center h-60vh">
                     <div className="col-md-7">
-                        <h1>Find the book that you need at an affordable prices @<br />
+                        <h1>Find the books that you need at affordable prices @<br />
                             THE BOOK SPOT
                         </h1>
                         <Link to='/books'><PrimaryBtn1 className='w-25'>Find Now</PrimaryBtn1></Link>

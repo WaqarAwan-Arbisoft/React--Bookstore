@@ -1,3 +1,4 @@
+import { Pagination } from "@mui/material";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
@@ -6,6 +7,7 @@ import NotificationCard from "../components/notification-card";
 import RequestCard from "../components/request-card";
 import SearchUserModal from "../components/search-user-modal";
 import PrimaryBtn1 from "../UI/primary-btn";
+import { NOTIFICATIONS_PAGE_LIMIT } from "../constant/paginations";
 
 const FriendRequests = () => {
     const authStates = useSelector(states => states.auth)
@@ -14,6 +16,7 @@ const FriendRequests = () => {
     const [notificationLoaded, setNotificationLoaded] = useState(false)
     const [notifications, setNotifications] = useState([])
     const [modalOpen, setModalOpen] = useState(false);
+    const [count, setCount] = useState(0)
     const handleModalClose = () => {
         setModalOpen(false)
     }
@@ -40,7 +43,7 @@ const FriendRequests = () => {
         }
     }
     const fetchFriendshipNotification = async () => {
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/social/friendship-notifications/`, {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/social/friendship-notifications/?limit=${NOTIFICATIONS_PAGE_LIMIT}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -49,12 +52,14 @@ const FriendRequests = () => {
         })
         if (response.ok) {
             let respData = await response.json()
-            setNotifications([...respData])
+            setNotifications([...respData.results])
             setNotificationLoaded(true)
+            setCount(Math.ceil(respData.count / NOTIFICATIONS_PAGE_LIMIT))
         }
         else {
             setNotifications([])
             setNotificationLoaded(true)
+            setCount(0)
         }
     }
     const acceptRequest = async (userId) => {
@@ -89,6 +94,29 @@ const FriendRequests = () => {
         fetchFriendRequests();
         fetchFriendshipNotification()
     }, [])
+
+    const paginationHandler = async (e) => {
+        setNotificationLoaded(false)
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/social/friendship-notifications/?limit=${NOTIFICATIONS_PAGE_LIMIT}&offset=${NOTIFICATIONS_PAGE_LIMIT * (parseInt(e.target.innerText) - 1)}`, {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Token ' + authStates.token
+            }
+        })
+        let respData;
+        if (response.ok) {
+            let respData = await response.json()
+            setNotifications([...respData.results])
+            setNotificationLoaded(true)
+            setCount(Math.ceil(respData.count / NOTIFICATIONS_PAGE_LIMIT))
+        }
+        else {
+            setNotifications([])
+            setNotificationLoaded(true)
+            setCount(0)
+        }
+    }
     return (
         <>
             <SearchUserModal open={modalOpen} handleClose={handleModalClose} />
@@ -134,6 +162,9 @@ const FriendRequests = () => {
                             ))}
                         </>
                     }
+                    <div className="d-flex justify-content-center my-4">
+                        {count !== 0 && <Pagination hideNextButton={true} hidePrevButton={true} count={count} onClick={paginationHandler} />}
+                    </div>
                 </div>
 
                 {(notificationLoaded && notifications.length === 0) &&

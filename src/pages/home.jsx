@@ -4,20 +4,20 @@ import { useState } from "react";
 import { useEffect } from "react";
 import BookSaleCard from "../components/book-sale-card";
 import SearchIcon from '@mui/icons-material/Search';
+import { HOME_SCREEN_BOOKS } from "../constant/paginations";
 
 const Home = () => {
     const [count, setCount] = useState(0);
-    const [next, setNext] = useState(null)
     const [booksList, setBooksList] = useState([])
     useEffect(() => {
         const fetchAllBooks = async () => {
-            const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/books/fetch-all/?limit=2`)
+            const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/books/fetch-all/?limit=${HOME_SCREEN_BOOKS}`)
             let respData;
             if (response.ok) {
                 respData = await response.json();
                 if (respData.results.length > 0) {
                     setBooksList(respData.results)
-                    setCount(Math.ceil(respData.count / 2))
+                    setCount(Math.ceil(respData.count / HOME_SCREEN_BOOKS))
                 }
                 else {
                     setBooksList([])
@@ -34,13 +34,13 @@ const Home = () => {
     }, [])
     const searchBookHandler = async (e) => {
 
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/books/fetch-all/?search=${e.target.value}&limit=2`)
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/books/fetch-all/?search=${e.target.value}&limit=${HOME_SCREEN_BOOKS}`)
         let respData;
         if (response.ok) {
             respData = await response.json();
             if (respData.results.length > 0) {
                 setBooksList(respData.results)
-                setCount(Math.ceil(respData.count / 2))
+                setCount(Math.ceil(respData.count / HOME_SCREEN_BOOKS))
             }
             else {
                 setBooksList([])
@@ -49,7 +49,7 @@ const Home = () => {
         }
     }
     const paginationHandler = async (e) => {
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/books/fetch-all/?limit=2&offset=${2 * (parseInt(e.target.innerText) - 1)}`)
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/books/fetch-all/?limit=${HOME_SCREEN_BOOKS}&offset=${HOME_SCREEN_BOOKS * (parseInt(e.target.innerText) - 1)}`)
         let respData;
         if (response.ok) {
             respData = await response.json();
@@ -88,8 +88,7 @@ const Home = () => {
 
             </div>
             <div className="d-flex justify-content-center my-4">
-                {count !== 0 && <Pagination count={count} onClick={paginationHandler} />}
-
+                {count !== 0 && <Pagination hideNextButton={true} hidePrevButton={true} count={count} onClick={paginationHandler} />}
             </div>
 
         </div>

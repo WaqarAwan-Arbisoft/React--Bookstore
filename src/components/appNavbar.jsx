@@ -167,6 +167,16 @@ const AppNavbar = () => {
                                     </Button>
 
                                 </Link>
+                                <Link to='/favorites'>
+
+                                    <Button
+                                        onClick={handleCloseNavMenu}
+                                        sx={{ my: 2, color: 'white', display: 'block' }}
+                                    >
+                                        Favorites
+                                    </Button>
+
+                                </Link>
                             </>
                         ) : ''}
 
