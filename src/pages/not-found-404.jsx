@@ -2,9 +2,9 @@ const NotFound404 = () => {
     return (
         <div className="text-center my-5">
             <img src="/Images/404.png" alt="404_NOT_FOUND" width={200} />
-            <h3 className="mt-3">
+            <h1 className="mt-3 font-family-rubik">
                 Page Not Found...!!!
-            </h3>
+            </h1>
         </div>
     )
 }

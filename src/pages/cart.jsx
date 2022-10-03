@@ -1,12 +1,10 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import CartItems from "../components/cart-items";
-import FullPageLoader from "../components/full-page-loader";
 import Loader from "../components/loader";
 import Summary from "../components/summary";
-import PrimaryBtn1 from "../UI/primary-btn";
 import { tempActions } from "../store/temp-reducers";
-import { Alert, Snackbar } from "@mui/material";
 
 const Cart = () => {
     const authStates = useSelector(state => state.auth)
@@ -15,8 +13,9 @@ const Cart = () => {
     const [cartData, setCartData] = useState();
     const [isItemsLoaded, setIsItemsLoaded] = useState(false);
     const [isSummaryLoaded, setIsSummaryLoaded] = useState(false);
-
     const dispatch = useDispatch();
+
+    //* Helper functions for this page
     const fetchCartItems = async () => {
         if (authStates.isAuthenticated) {
             let response;
@@ -50,7 +49,7 @@ const Cart = () => {
                 });
             }
             catch (err) {
-                console.log("Server is offline");
+                dispatch(tempActions.addErrorToast({ message: "Server error." }))
             }
             let respData;
             if (response.ok) {
@@ -82,7 +81,7 @@ const Cart = () => {
                 });
             }
             catch (err) {
-                console.log("Server is offline");
+                dispatch(tempActions.addErrorToast({ message: "Server error." }))
             }
             let respData;
             if (response.ok) {
@@ -100,7 +99,6 @@ const Cart = () => {
         }
     }
     const checkStock = () => {
-
         return fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/shop/check-stock/`, {
             method: 'POST',
             headers: {
@@ -131,15 +129,17 @@ const Cart = () => {
             fetchCartInfo()
         }
         else {
-            console.log("An error occurred")
+            dispatch(tempActions.addErrorToast({ message: "An error occurred." }))
         }
     }
+    //* Helper functions for this page
+
+
     useEffect(() => {
         setIsItemsLoaded(false);
         setIsSummaryLoaded(false);
         fetchCartItems();
-    }, [])
-
+    }, []);
     return (
         <>
             <div className="px-5 my-5 mx-auto">
@@ -148,13 +148,12 @@ const Cart = () => {
                     <h3 className="text-center my-4">No Item added to the cart.</h3>
                 )}
                 {!authStates.isAuthenticated && (
-                    <h3 className="text-center">Please login to see cart items and initiate purchasing.</h3>
+                    <h3 className="text-center text-muted">Please <Link to='/login' className="text-primary">login</Link> to see cart items and initiate purchasing.</h3>
                 )}
                 <div className="row mt-5">
                     <div className="col-lg-8">
                         {authStates.isAuthenticated && isItemsLoaded && (
                             <>
-
                                 {cartItems.length !== 0 && cartItems.map((item, index) => (
                                     <CartItems key={index} fetchCartItems={fetchCartItems} fetchCartInfo={fetchCartInfo} item={item} />
                                 ))}

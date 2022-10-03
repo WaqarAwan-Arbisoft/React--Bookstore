@@ -2,12 +2,10 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
-import { Link } from 'react-router-dom';
 import PrimaryBtn1 from '../UI/primary-btn';
 
 const FavBookCard = (props) => {
     const { book } = props.book;
-    console.log(props.remove)
     return (
         <Card sx={{ width: 250 }} className="m-4 shadow-self">
 
@@ -31,7 +29,6 @@ const FavBookCard = (props) => {
                     <PrimaryBtn1 color='error' onClick={() => { props.remove(book.id) }}>Remove</PrimaryBtn1>
                 </div>
             </CardContent>
-
         </Card>
     )
 }

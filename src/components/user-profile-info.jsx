@@ -164,7 +164,7 @@ const UserProfileInfo = (props) => {
         if (response.ok) {
             let respData = await response.json()
             setIsFriend(true);
-            if (respData.initiatedBy === authStates.id) {
+            if (respData.initiatedBy.id === authStates.id) {
                 setIsInitiator(true)
             }
             else {
@@ -187,7 +187,7 @@ const UserProfileInfo = (props) => {
         if (response.ok) {
             let respData = await response.json()
             setIsRequestSent(true);
-            if (respData.initiatedBy === authStates.id) {
+            if (respData.initiatedBy.id === authStates.id) {
                 setIsInitiator(true)
             }
             else {

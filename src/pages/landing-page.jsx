@@ -1,28 +1,26 @@
-import { useState } from "react";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Loader from "../components/loader";
 import MostLikedBookCard from "../components/most-liked-book-card";
 import PrimaryBtn1 from "../UI/primary-btn";
-const BOOKS_TO_SHOW = 3;
+import { TOP_BOOKS_LIMIT } from "../constant/paginations";
+import { useDispatch } from "react-redux";
+import { tempActions } from "../store/temp-reducers";
+
 const LandingPage = () => {
     const [mostLikedBooks, setMostLikedBooks] = useState([]);
     const [isBooksLoaded, setIsBooksLoaded] = useState(false)
+    const dispatch = useDispatch()
     const fetchTopBooks = async () => {
         let response;
-        try {
-
-            response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/books/fetch-top-books/${BOOKS_TO_SHOW}/`);
-        }
-        catch (err) {
-            console.log(err)
-        }
+        response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/books/fetch-top-books/${TOP_BOOKS_LIMIT}/`);
         if (response.ok) {
             let respData = await response.json()
             setMostLikedBooks([...respData]);
             setIsBooksLoaded(true)
         }
         else {
+            dispatch(tempActions.addErrorToast({ message: "An error occurred." }))
             setMostLikedBooks([]);
             setIsBooksLoaded(true)
         }
@@ -46,7 +44,7 @@ const LandingPage = () => {
 
             <div className="my-5">
                 <h1 className="text-center">OUR MOST LIKED BOOKS</h1>
-                {!isBooksLoaded && <div>
+                {!isBooksLoaded && <div className="text-center">
                     <Loader width='100' height='100' />
                 </div>}
                 {isBooksLoaded && mostLikedBooks.length > 0 && <div className="d-flex justify-content-center">

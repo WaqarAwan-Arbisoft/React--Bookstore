@@ -13,17 +13,13 @@ import { Container } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import Loader from '../components/loader';
-import { useDispatch } from 'react-redux';
-import { tempActions } from '../store/temp-reducers';
 import ErrorAlert from '../components/error-alert';
 import Countdown from 'react-countdown';
 import { GoogleLogin } from 'react-google-login';
-import GoogleIcon from '@mui/icons-material/Google';
 
 const theme = createTheme();
 
 export default function Register() {
-    const dispatch = useDispatch();
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -34,8 +30,9 @@ export default function Register() {
     const [formStep, setFormStep] = useState(1);
     const [isLoaded, setIsLoaded] = useState(true);
     const [otp, setOtp] = useState('');
-    const [countDownTime, setCountDownTime] = useState(Date.now() + 180000)
+    const [countdown, setCountdown] = useState(Date.now() + 180000);
 
+    //* Helper functions for this page
     const nameChangeHandler = (e) => {
         setName(e.target.value);
     }
@@ -99,8 +96,8 @@ export default function Register() {
         let respData;
         if (response.ok) {
             respData = await response.json();
-            // dispatch(tempActions.setCredentials({ email: email, password: password }))
             setFormStep(2);
+            setCountdown(Date.now() + 180000)
             setIsLoaded(true);
         }
         else {
@@ -156,6 +153,9 @@ export default function Register() {
         setFormStep(1);
         setIsLoaded(true);
     }
+    //* Helper functions for this page
+
+
     return (
         <ThemeProvider theme={theme}>
             <Grid container component="main" sx={{ height: '100vh' }}>
@@ -321,7 +321,7 @@ export default function Register() {
                                             onChange={otpChangeHandler}
                                             value={otp}
                                         />
-                                        <small className='text-muted'>*The code will expire after <b className='text-danger'><Countdown date={countDownTime} /></b>.</small>
+                                        <small className='text-muted'>*The code will expire after <b className='text-danger'><Countdown date={countdown} /></b>.</small>
                                     </Grid>
                                     <Button
                                         type="button"

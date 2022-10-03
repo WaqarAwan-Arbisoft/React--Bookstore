@@ -11,6 +11,8 @@ const Feed = () => {
     const authStates = useSelector(states => states.auth);
     const [feeds, setFeeds] = useState([])
     const [count, setCount] = useState(0);
+
+    //* Helper functions for this page
     const fetchFeed = async () => {
         const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/social/fetch-feed/?limit=${FEED_POSTS_LIMIT}`, {
             method: "GET",
@@ -31,10 +33,6 @@ const Feed = () => {
             setCount(0)
         }
     }
-    useEffect(() => {
-        fetchFeed();
-    }, [])
-
     const paginationHandler = async (e) => {
         const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/social/fetch-feed/?limit=${FEED_POSTS_LIMIT}&offset=${FEED_POSTS_LIMIT * (parseInt(e.target.innerText) - 1)}`, {
             method: "GET",
@@ -56,6 +54,11 @@ const Feed = () => {
             setIsLoaded(true)
         }
     }
+    //* Helper functions for this page
+
+    useEffect(() => {
+        fetchFeed();
+    }, [])
     return (
         <div>
             <h1 className="text-center m-4 text-muted">Latest from your friends</h1>

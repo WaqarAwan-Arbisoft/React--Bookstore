@@ -10,7 +10,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Container } from '@mui/material';
-import { Link, Navigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import ErrorAlert from '../components/error-alert';
 import Loader from '../components/loader';
@@ -30,12 +30,16 @@ export default function Login() {
     const dispatch = useDispatch();
     const isAuthenticated = useSelector(state => state.auth.isAuthenticated)
 
+    //* Helper functions for this page
     const emailChangeHandler = (e) => {
         setEmail(e.target.value);
     }
     const passwordChangeHandler = (e) => {
         setPassword(e.target.value);
     }
+
+    // @param:
+    //* mail: Email address of the user
     function validateEmail(mail) {
         if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
             return true;
@@ -45,13 +49,11 @@ export default function Login() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoaded(false);
-
         if (!validateEmail(email)) {
             setError({ status: true, message: "Please enter a correct email." })
             setIsLoaded(true);
             return;
         }
-
         const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/user/login/`, {
             method: "POST",
             headers: {
@@ -91,6 +93,7 @@ export default function Login() {
             setIsLoaded(true);
         }
     };
+    //* Helper functions for this page
 
     return (
         <ThemeProvider theme={theme}>
@@ -110,7 +113,6 @@ export default function Login() {
                         backgroundPosition: 'center',
                     }}
                 />
-                {isAuthenticated && <Navigate to="/" />}
                 {isLoaded ? (
                     <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
                         <Container component="main" maxWidth="xs">

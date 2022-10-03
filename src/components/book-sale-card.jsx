@@ -3,97 +3,42 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
-import { CardActions, Chip, Snackbar } from '@mui/material';
+import { CardActions, Chip } from '@mui/material';
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
 import PrimaryBtn1 from '../UI/primary-btn';
-import MuiAlert from '@mui/material/Alert';
-import { useSelector } from 'react-redux';
 
-const Alert = React.forwardRef(function Alert(props, ref) {
-    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-});
 
 const BookSaleCard = (props) => {
-    const [quantity, setQuantity] = useState(1)
-    const [showToast, setShowToast] = useState(false)
-    const authState = useSelector(state => state.auth)
-
-    const addToCartHandler = async (bookId) => {
-        if (authState.isAuthenticated) {
-            const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/shop/add-to-cart/`, {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Token ' + authState.token,
-                },
-                body: JSON.stringify({
-                    "book": bookId,
-                    "quantity": 1
-                })
-            })
-            if (response.ok) {
-                openToast();
-            }
-            else {
-                console.log(await response.json())
-            }
-        }
-        else {
-            if (sessionStorage.getItem('cartItems')) {
-                let items = sessionStorage.getItem('cartItems');
-                items = items + "%" + JSON.stringify({ bookId: bookId, quantity: quantity })
-                sessionStorage.setItem('cartItems', items)
-                openToast();
-            }
-            else {
-                sessionStorage.setItem('cartItems', JSON.stringify({ bookId: bookId, quantity: quantity }))
-                openToast();
-            }
-        }
-    }
-    const openToast = () => {
-        setShowToast(true);
-    };
-
-    const handleToastClose = () => {
-        setShowToast(false)
-    }
+    const { book } = props;
     return (
         <>
             <Card sx={{ width: 345 }} className="m-3 shadow-self">
-                <Link to={props.data.id + '/' + props.data.name}>
+                <Link to={book.id + '/' + book.name}>
                     <CardMedia
                         component="img"
                         height="400"
-                        image={props.data.image === null ? 'https://via.placeholder.com/300x350' : props.data.image}
+                        image={book.image === null ? 'https://via.placeholder.com/300x350' : book.image}
                         alt="green iguana"
                     />
                     <CardContent>
                         <Typography gutterBottom variant="h5" component="div">
-                            {props.data.name}
+                            {book.name}
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
-                            <b>Price: </b>${props.data.price}
+                            <b>Price: </b>${book.price}
                         </Typography>
                         <Typography variant="body2" color="text.secondary" className='mt-1'>
-                            {props.data.stock > 0 && props.data.stock < 10 && <small className='text-muted text-danger d-block'>Only {props.data.stock} left in stock.</small>}
+                            {book.stock > 0 && book.stock < 10 && <small className='text-muted text-danger d-block'>Only {book.stock} left in stock.</small>}
                         </Typography>
                     </CardContent>
                 </Link>
                 <CardActions>
-                    {props.data.stock === 0 ? <Chip label="OUT OF STOCK" color="error" /> : <PrimaryBtn1 size="small" color="primary" onClick={(e) => { addToCartHandler(props.data.id) }}>
+                    {book.stock === 0 ? <Chip label="OUT OF STOCK" color="error" /> : <PrimaryBtn1 size="small" color="primary" onClick={(e) => { props.addToCart(book.id) }}>
                         Add to Cart
                     </PrimaryBtn1>}
                 </CardActions>
             </Card>
-            <Snackbar open={showToast} autoHideDuration={800} onClose={handleToastClose}>
-                <Alert severity="success" sx={{ width: '100%' }}>
-                    Item successfully added to the cart.
-                </Alert>
-            </Snackbar>
         </>
-
     )
 }
 

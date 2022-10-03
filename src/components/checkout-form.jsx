@@ -2,17 +2,15 @@ import * as React from 'react';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js';
 import PrimaryBtn1 from '../UI/primary-btn';
 import { useState } from 'react';
 import ErrorAlert from './error-alert';
 import Loader from './loader';
 import { useDispatch, useSelector } from 'react-redux';
-import { Alert, Snackbar } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { tempActions } from '../store/temp-reducers';
+import AppToast from '../UI/app-toast';
 
 const CheckoutForm = (props) => {
     const authStates = useSelector(states => states.auth)
@@ -60,7 +58,6 @@ const CheckoutForm = (props) => {
                         setIsLoaded(true);
                     }
                     if (response.ok) {
-                        let respData = await response.json()
                         dispatch(tempActions.addSuccessToast({ message: "You have successfully placed the order." }))
                         navigate('/orders');
                         setError(null)
@@ -79,7 +76,6 @@ const CheckoutForm = (props) => {
                         }
                     }
                     else {
-                        let respData = await response.json()
                         setPaymentError({ status: true, message: "An error occurred while making the payment." });
                         setIsLoaded(true);
                     }
@@ -114,7 +110,6 @@ const CheckoutForm = (props) => {
     return (
         <>
             <form onSubmit={checkoutSubmitHandler} className='mt-3'>
-
                 <Typography variant="h5" gutterBottom textAlign={'center'}>
                     <img src="/Images/Logo/stripe.png" alt="STRIPE_PAYMENTS" width={150} />
                 </Typography>
@@ -153,11 +148,7 @@ const CheckoutForm = (props) => {
                         </div>
                     )}
             </form>
-            {!isStockAvailable.status && <Snackbar open={!isStockAvailable.status} autoHideDuration={4000} onClose={handleToastClose}>
-                <Alert severity="error" sx={{ width: '100%' }}>
-                    {isStockAvailable.message}
-                </Alert>
-            </Snackbar>}
+            {!isStockAvailable.status && <AppToast open={!isStockAvailable.status} onClose={handleToastClose} autoHideDuration={4000} message={isStockAvailable.message} severity={'error'} />}
         </>
     );
 }

@@ -65,7 +65,7 @@ const CartItems = (props) => {
     return (
         <div className="d-flex mb-4 cart-item-container align-items-center">
             <div className="text-center mx-4">
-                <img src={props.item.book.image} alt="" width={150} />
+                <img src={props.item.book.image} alt="BOOK_IMAGE" width={150} />
             </div>
             <div className="d-flex flex-column justify-content-between">
                 <div>
@@ -83,7 +83,6 @@ const CartItems = (props) => {
                         </span></div>
 
                     )}
-
                     <div className="mt-3">
                         <PrimaryBtn1 color='error' onClick={() => { removeItemHandler(props.item.book.id) }}><DeleteIcon /> Remove Item</PrimaryBtn1>
                     </div>

@@ -29,6 +29,8 @@ const NewPassword = () => {
     const [isUpdated, setIsUpdated] = useState(false);
     const [error, setError] = useState({ status: false, message: "" });
 
+
+    //* Helper functions for this page
     const isTokenValid = async () => {
         let response;
         try {
@@ -41,15 +43,11 @@ const NewPassword = () => {
             let respData = await response.json();
             setEmail(respData.email);
             setIsLoaded(true);
-
         }
         else {
             navigate('/pageNotFound');
         }
     }
-    useEffect(() => {
-        isTokenValid()
-    }, [])
     const passwordChangeHandler = (e) => {
         setPassword(e.target.value);
     }
@@ -59,7 +57,6 @@ const NewPassword = () => {
             setError({ status: true, message: "Password should be 5 characters long." })
             return;
         }
-
         const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/user/update-password/`, {
             method: 'PATCH',
             headers: {
@@ -79,6 +76,11 @@ const NewPassword = () => {
             setError({ status: true, message: respData.detail })
         }
     }
+    //* Helper functions for this page
+
+    useEffect(() => {
+        isTokenValid()
+    }, [])
     return (
 
         <Grid container component="main" sx={{ height: '100vh' }}>
@@ -144,8 +146,6 @@ const NewPassword = () => {
                     ) : <div className='text-center '>
                         <Loader width={150} height={150} />
                     </div>}
-
-
                 </Box>
             </Grid>
         </Grid >
