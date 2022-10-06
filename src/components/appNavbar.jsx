@@ -192,7 +192,7 @@ const AppNavbar = () => {
                             <>
                                 <Tooltip title="Open settings">
                                     <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                        <Avatar alt={authStates.name} src={authStates.image} />
+                                        <Avatar alt={authStates.name} src={authStates.image ? authStates.image : require('../assets/images/DEFAULT_RPOFILE_PICTURE.png')} />
                                     </IconButton>
                                 </Tooltip>
                                 <Menu

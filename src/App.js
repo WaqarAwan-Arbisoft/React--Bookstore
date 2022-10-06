@@ -35,32 +35,37 @@ function App() {
   const errorToasts = useSelector(state => state.temp.errorToasts);
   const successToasts = useSelector(state => state.temp.successToasts);
 
-  useEffect(() => {
-    const activateSession = async (token) => {
-      const userDataResponse = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/user/fetch-user/`, {
-        method: "GET",
-        headers: {
-          'Authorization': `Token ${token}`,
-        }
-      })
-      if (userDataResponse.ok) {
-        let userData = await userDataResponse.json();
-        dispatch(authAction.login({
-          token: token,
-          id: userData.id,
-          email: userData.email,
-          username: userData.name,
-          image: userData.image,
-          admin: userData.is_staff
-        }))
-        setIsLoaded(true);
-      }
-      else {
-        dispatch(authAction.logout())
-        setIsLoaded(true);
-      }
-    }
+  //* Helper function for this module
 
+  const activateSession = async (token) => {
+    const userDataResponse = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/user/fetch-user/`, {
+      method: "GET",
+      headers: {
+        'Authorization': `Token ${token}`,
+      }
+    })
+    if (userDataResponse.ok) {
+      let userData = await userDataResponse.json();
+      dispatch(authAction.login({
+        token: token,
+        id: userData.id,
+        email: userData.email,
+        username: userData.name,
+        image: userData.image,
+        admin: userData.is_staff
+      }))
+      setIsLoaded(true);
+    }
+    else {
+      cookies.remove('app_auth_token');
+      dispatch(authAction.logout())
+      setIsLoaded(true);
+    }
+  }
+
+
+  //* Helper function for this module
+  useEffect(() => {
     try {
       setIsLoaded(false);
       if (cookies.get('app_auth_token')) {

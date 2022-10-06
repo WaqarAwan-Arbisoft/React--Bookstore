@@ -119,7 +119,7 @@ export default function Register() {
             return;
         }
         const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/user/register/`, {
-            method: "POST",
+            method: "PATCH",
             headers: {
                 'Content-Type': 'application/json',
             },

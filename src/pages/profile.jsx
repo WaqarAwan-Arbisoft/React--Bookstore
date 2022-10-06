@@ -19,7 +19,12 @@ const Profile = () => {
         })
         if (response.ok) {
             let respData = await response.json();
-            setIsSelfProfile(authStates.id === respData.id)
+            if (authStates.id === respData.id) {
+                setIsSelfProfile(true)
+            }
+            else {
+                setIsSelfProfile(false)
+            }
             setUser(respData)
             setIsLoaded(true)
         }

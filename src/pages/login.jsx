@@ -76,7 +76,8 @@ export default function Login() {
             })
             if (userDataResponse.ok) {
                 let userData = await userDataResponse.json();
-                cookies.set('app_auth_token', token)
+                cookies.remove('app_auth_token')
+                cookies.set('app_auth_token', token, { path: "/" })
                 dispatch(authAction.login({
                     token: token,
                     id: userData.id,

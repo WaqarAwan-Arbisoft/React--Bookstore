@@ -169,7 +169,7 @@ const FriendRequests = () => {
 
                 {(notificationLoaded && notifications.length === 0) &&
                     <>
-                        <h2 className="text-center m-5 text-muted">No Request received.</h2>
+                        <h2 className="text-center m-5 text-muted">No notification to show.</h2>
                     </>
                 }
             </div>

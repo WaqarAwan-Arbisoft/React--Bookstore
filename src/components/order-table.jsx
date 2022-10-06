@@ -38,7 +38,8 @@ function Row(props) {
             setIsLoaded(true)
         }
         else {
-            console.log(response)
+            setOrderDetail([])
+            setIsLoaded(true)
         }
     }
     useEffect(() => {

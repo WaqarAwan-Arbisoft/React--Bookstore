@@ -25,6 +25,7 @@ const UserProfileInfo = (props) => {
     const [isRequestSent, setIsRequestSent] = useState(false);
     const [isFriend, setIsFriend] = useState(false);
     const [isInitiator, setIsInitiator] = useState()
+
     const onImageChangeHandler = (e) => {
         const file = e.target.files[0];
         setImage(file);
@@ -84,7 +85,6 @@ const UserProfileInfo = (props) => {
             body: formData
         })
         if (response.ok) {
-            let respData = await response.json()
             setError({ ...error, status: false })
             setIsEditing(false)
             props.fetchUser();
@@ -95,6 +95,31 @@ const UserProfileInfo = (props) => {
         }
 
     }
+
+    const fetchFriendship = async () => {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/social/fetch-friendship/${props.id}/`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Token ' + authStates.token
+            }
+        })
+        if (response.ok) {
+            let respData = await response.json()
+            if (respData.is_accepted) {
+                setIsFriend(true);
+            }
+            else {
+                setIsRequestSent(true);
+                respData.initiatedBy.id === authStates.id ? setIsInitiator(true) : setIsInitiator(false);
+            }
+        }
+        else {
+            setIsFriend(false);
+            setIsRequestSent(false);
+        }
+    }
+
 
     const addAsFriendHandler = async (userId) => {
         const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/social/add-as-friend/`, {
@@ -108,8 +133,7 @@ const UserProfileInfo = (props) => {
             })
         })
         if (response.ok) {
-            setIsRequestSent(true);
-            setIsFriend(false);
+            fetchFriendship()
         }
     }
     const removeFromFriendsHandler = async (userId) => {
@@ -121,8 +145,7 @@ const UserProfileInfo = (props) => {
             }
         })
         if (response.ok) {
-            setIsRequestSent(false);
-            setIsFriend(false);
+            fetchFriendship()
         }
     }
     const removeRequestHandler = async (userId) => {
@@ -134,8 +157,7 @@ const UserProfileInfo = (props) => {
             }
         })
         if (response.ok) {
-            setIsRequestSent(false);
-            setIsFriend(false);
+            fetchFriendship()
         }
     }
     const requestAcceptHandler = async (userId) => {
@@ -153,53 +175,8 @@ const UserProfileInfo = (props) => {
             setIsFriend(true);
         }
     }
-    const checkIfFriends = async () => {
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/social/is-friend/${props.id}/`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Token ' + authStates.token
-            }
-        })
-        if (response.ok) {
-            let respData = await response.json()
-            setIsFriend(true);
-            if (respData.initiatedBy.id === authStates.id) {
-                setIsInitiator(true)
-            }
-            else {
-                setIsInitiator(false)
-            }
-        }
-        else {
-            setIsFriend(false);
-            checkIfRequestSent();
-        }
-    }
-    const checkIfRequestSent = async () => {
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/social/is-request-sent/${props.id}/`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Token ' + authStates.token
-            }
-        })
-        if (response.ok) {
-            let respData = await response.json()
-            setIsRequestSent(true);
-            if (respData.initiatedBy.id === authStates.id) {
-                setIsInitiator(true)
-            }
-            else {
-                setIsInitiator(false)
-            }
-        }
-        else {
-            setIsRequestSent(false);
-        }
-    }
     useEffect(() => {
-        checkIfFriends();
+        fetchFriendship();
     }, [])
     return (
         <div className="user-profile-info-card">
