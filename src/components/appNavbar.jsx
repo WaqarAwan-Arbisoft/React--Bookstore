@@ -24,7 +24,6 @@ import Cookies from 'universal-cookie'
 const AppNavbar = () => {
     const authStates = useSelector(state => state.auth)
     const tempStates = useSelector(state => state.temp);
-    const totalItems = tempStates.totalCartItems;
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
     const dispatch = useDispatch();

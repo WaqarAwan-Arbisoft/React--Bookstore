@@ -76,7 +76,7 @@ export default function Register() {
             setIsLoaded(true);
             return;
         }
-        else if (password.length <= 5) {
+        else if (password.length < 5) {
             setError({ status: true, message: "Password should be at least 5 characters long." })
             setIsLoaded(true);
             return;
@@ -102,12 +102,9 @@ export default function Register() {
         }
         else {
             respData = await response.json()
-            if (typeof respData === 'object') {
-                let messageObject = respData[Object.keys(respData)[0]]
-                setError({ status: true, message: Array.isArray(respData[Object.keys(respData)[0]]) ? messageObject[0] : messageObject })
-                setFormStep(1);
-                setIsLoaded(true);
-            }
+            setError({ status: true, message: respData.error.detail })
+            setFormStep(1);
+            setIsLoaded(true);
         }
     };
     const otpChangeHandler = (e) => {
@@ -136,10 +133,7 @@ export default function Register() {
         }
         else {
             respData = await response.json()
-
-            if (respData.length === 0)
-                console.log(respData)
-            setError({ status: true, message: respData.detail })
+            setError({ status: true, message: respData.error.detail })
             setFormStep(2);
             setIsLoaded(true);
         }

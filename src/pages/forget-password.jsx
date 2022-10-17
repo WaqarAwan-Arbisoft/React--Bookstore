@@ -49,7 +49,7 @@ const ForgetPassword = () => {
         }
         else {
             let respData = await response.json()
-            setError({ status: true, message: respData.detail })
+            setError({ status: true, message: respData.error.detail })
         }
     }
     //* Helper functions for this page

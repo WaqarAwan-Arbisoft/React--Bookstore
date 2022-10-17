@@ -7,7 +7,6 @@ const initialAuthState = {
     email: null,
     username: null,
     image: null,
-    admin: false
 }
 const authSlice = createSlice({
     name: 'authentication',
@@ -20,7 +19,6 @@ const authSlice = createSlice({
             state.email = action.payload.email;
             state.username = action.payload.username;
             state.image = action.payload.image;
-            state.admin = action.payload.admin;
         },
         logout(state) {
             state.isAuthenticated = false;
@@ -29,7 +27,6 @@ const authSlice = createSlice({
             state.email = null;
             state.username = null;
             state.image = null;
-            state.admin = false;
         }
     }
 });

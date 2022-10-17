@@ -32,7 +32,7 @@ const CheckoutForm = (props) => {
             stResp = stockResponse;
             return stResp.json()
         }).then(async (data) => {
-            if (!data.detail) {
+            if (!data.error) {
                 const card = elements.getElement(CardElement);
                 const { paymentMethod, error } = await stripe.createPaymentMethod({
                     type: 'card',
@@ -40,7 +40,7 @@ const CheckoutForm = (props) => {
                 });
                 if (!error) {
                     try {
-                        response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/shop/save-stripe-info/`, {
+                        response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/shop/make-stripe-payment/`, {
                             method: "POST",
                             headers: {
                                 'Content-type': "application/json",
@@ -86,7 +86,7 @@ const CheckoutForm = (props) => {
                 }
             }
             else {
-                setIsStockAvailable({ status: false, message: data.detail })
+                setIsStockAvailable({ status: false, message: data.error.detail })
                 setIsLoaded(true)
             }
         }).catch(err => {

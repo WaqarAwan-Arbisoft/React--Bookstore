@@ -3,7 +3,7 @@ const Review = (props) => {
     return (
         <div className="shadow p-4 rounded-4">
             <div className="d-flex flex-column align-items-center justify-content-center">
-                <img src={props.review.user.image} className="rounded-circle" alt="PROFILE_IMAGE" width={50} />
+                <img src={props.review.user.image ? props.review.user.image : require('../assets/images/DEFAULT_RPOFILE_PICTURE.png')} className="rounded-circle" alt="PROFILE_IMAGE" width={50} />
                 <b className="my-2">{props.review.user.name}</b>
             </div>
             <hr />

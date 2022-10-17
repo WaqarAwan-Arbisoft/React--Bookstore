@@ -1,4 +1,3 @@
-import StarIcon from '@mui/icons-material/Star';
 import Box from '@mui/material/Box';
 import Rating from '@mui/material/Rating';
 import Typography from '@mui/material/Typography';
@@ -44,7 +43,7 @@ const NewReview = (props) => {
     return (
         <div className="shadow p-4 rounded-4">
             <div className="d-flex flex-column align-items-center justify-content-center">
-                <img src={authStates.image} className="rounded-circle" alt="PROFILE_IMAGE" width={50} />
+                <img src={authStates.image ? authStates.image : require('../assets/images/DEFAULT_RPOFILE_PICTURE.png')} className="rounded-circle" alt="PROFILE_IMAGE" width={50} />
                 <b className="my-2">{authStates.username}</b>
             </div>
             <hr />

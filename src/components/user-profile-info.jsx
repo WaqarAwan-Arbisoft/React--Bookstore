@@ -1,6 +1,4 @@
-import EmailIcon from '@mui/icons-material/Email';
 import { TextField } from '@mui/material';
-import { Container } from '@mui/system';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import PrimaryBtn1 from '../UI/primary-btn';
@@ -91,7 +89,7 @@ const UserProfileInfo = (props) => {
         }
         else {
             let respData = await response.json()
-            setError({ status: true, message: respData.detail })
+            setError({ status: true, message: respData.error.detail })
         }
 
     }
@@ -176,17 +174,19 @@ const UserProfileInfo = (props) => {
         }
     }
     useEffect(() => {
-        fetchFriendship();
+        if (!props.isSelfProfile) {
+            fetchFriendship();
+        }
     }, [])
     return (
         <div className="user-profile-info-card">
             <div className="text-center">
                 <h4>User Profile Information</h4>
-                {!isEditing && <img src={profileImage} alt="PROFILE_IMAGE" width={150} className='rounded-circle' />}
+                {!isEditing && <img src={profileImage ? profileImage : require('../assets/images/DEFAULT_RPOFILE_PICTURE.png')} alt="PROFILE_IMAGE" width={150} className='rounded-circle' />}
                 {isEditing &&
                     <div className='mx-auto'>
                         <label htmlFor='profile_image'>
-                            <img src={profileImage} alt="PROFILE_IMAGE" className='rounded-circle' width={150} />
+                            <img src={profileImage ? profileImage : require('../assets/images/DEFAULT_RPOFILE_PICTURE.png')} alt="PROFILE_IMAGE" className='rounded-circle' width={150} />
                         </label>
 
                         <div className='d-none'>
@@ -266,43 +266,46 @@ const UserProfileInfo = (props) => {
                 {isSelfProfile && (
                     <div className="fs-4 mt-3">
                         <b>Role:</b>
-                        <div className="container">{authStates.admin === false ? 'User' : 'Administrator'}</div>
+                        <div className="container">User</div>
                     </div>
                 )}
-                {isSelfProfile ? (
-                    <div className='my-3 d-flex justify-content-center'>
-                        {!isEditing && <PrimaryBtn1 color={'success'} onClick={toggleForm}>Edit Profile</PrimaryBtn1>}
-                        {isEditing &&
-                            <div className='text-center'>
-                                <div className='my-2'>
-                                    <PrimaryBtn1 onClick={saveChangeHandler}>Save Changes</PrimaryBtn1>
-                                </div>
-                                <div className='my-2'>
-                                    <PrimaryBtn1 onClick={() => { setIsEditing(false) }} color='error'>Back</PrimaryBtn1>
-                                </div>
-                            </div>}
+                {authStates.isAuthenticated && (
+                    <>
+                        {isSelfProfile ? (
+                            <div className='my-3 d-flex justify-content-center'>
+                                {!isEditing && <PrimaryBtn1 color={'success'} onClick={toggleForm}>Edit Profile</PrimaryBtn1>}
+                                {isEditing &&
+                                    <div className='text-center'>
+                                        <div className='my-2'>
+                                            <PrimaryBtn1 onClick={saveChangeHandler}>Save Changes</PrimaryBtn1>
+                                        </div>
+                                        <div className='my-2'>
+                                            <PrimaryBtn1 onClick={() => { setIsEditing(false) }} color='error'>Back</PrimaryBtn1>
+                                        </div>
+                                    </div>}
 
-                    </div>
-                ) : (
-                    <div className='my-3 d-flex justify-content-center'>
-                        {isFriend && (
-                            <PrimaryBtn1 color={'error'} onClick={() => { removeFromFriendsHandler(props.id) }}>Remove from Friend &nbsp;<NotInterestedIcon /></PrimaryBtn1>
-                        )}
-                        {!isFriend && isRequestSent && (
-                            <>
-                                {isInitiator ? (
-                                    <PrimaryBtn1 color={'success'} onClick={() => { removeRequestHandler(props.id) }}>Friend Request Sent &nbsp;<ScheduleSendIcon /></PrimaryBtn1>
-                                ) : (
-                                    <PrimaryBtn1 color={'success'} onClick={() => { requestAcceptHandler(props.id) }}>Accept &nbsp;<ScheduleSendIcon /></PrimaryBtn1>
+                            </div>
+                        ) : (
+                            <div className='my-3 d-flex justify-content-center'>
+                                {isFriend && (
+                                    <PrimaryBtn1 color={'error'} onClick={() => { removeFromFriendsHandler(props.id) }}>Remove from Friend &nbsp;<NotInterestedIcon /></PrimaryBtn1>
                                 )}
-                            </>
+                                {!isFriend && isRequestSent && (
+                                    <>
+                                        {isInitiator ? (
+                                            <PrimaryBtn1 color={'success'} onClick={() => { removeRequestHandler(props.id) }}>Friend Request Sent &nbsp;<ScheduleSendIcon /></PrimaryBtn1>
+                                        ) : (
+                                            <PrimaryBtn1 color={'success'} onClick={() => { requestAcceptHandler(props.id) }}>Accept &nbsp;<ScheduleSendIcon /></PrimaryBtn1>
+                                        )}
+                                    </>
+                                )}
+                                {!isFriend && !isRequestSent && (
+                                    <PrimaryBtn1 color={'success'} onClick={() => { addAsFriendHandler(props.id) }}>Add as Friend &nbsp;<PersonAddOutlinedIcon /></PrimaryBtn1>
+                                )}
+                            </div>
                         )}
-                        {!isFriend && !isRequestSent && (
-                            <PrimaryBtn1 color={'success'} onClick={() => { addAsFriendHandler(props.id) }}>Add as Friend &nbsp;<PersonAddOutlinedIcon /></PrimaryBtn1>
-                        )}
-                    </div>
+                    </>
                 )}
-
             </div>
         </div>
     )

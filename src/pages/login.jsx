@@ -84,13 +84,12 @@ export default function Login() {
                     email: userData.email,
                     username: userData.name,
                     image: userData.image,
-                    admin: userData.is_staff
                 }))
             }
         }
         else {
             respData = await response.json()
-            setError({ status: true, message: respData.detail })
+            setError({ status: true, message: respData.error.detail })
             setIsLoaded(true);
         }
     };

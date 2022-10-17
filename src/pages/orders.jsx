@@ -37,7 +37,7 @@ const Orders = () => {
             <h1 className="text-center mb-5">Orders</h1>
             {isLoaded && orders.length > 0 && <OrderTable orders={orders} />}
             {isLoaded && orders.length === 0 && (
-                <h2 className="m-5 text-center">
+                <h2 className="m-5 text-center text-muted">
                     No Order placed yet.
                 </h2>
             )}

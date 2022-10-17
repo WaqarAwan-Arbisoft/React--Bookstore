@@ -57,7 +57,11 @@ const Cart = () => {
                 maintainCartItemData(respData);
                 setCartItems(respData.length == 0 ? [] : [...respData]);
                 setIsItemsLoaded(true);
-                dispatch(tempActions.setTotalCartItems(respData.length))
+                fetchCartInfo();
+            }
+            else {
+                setCartItems([]);
+                setIsItemsLoaded(true);
                 fetchCartInfo();
             }
         }

@@ -52,7 +52,6 @@ function App() {
         email: userData.email,
         username: userData.name,
         image: userData.image,
-        admin: userData.is_staff
       }))
       setIsLoaded(true);
     }

@@ -3,7 +3,6 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialTempState = {
     errorToasts: [],
     successToasts: [],
-    totalCartItems: 0
 };
 const tempSlice = createSlice({
     name: 'tempStates',
@@ -14,9 +13,6 @@ const tempSlice = createSlice({
         },
         addSuccessToast(state, action) {
             state.successToasts = [...state.successToasts, action.payload];
-        },
-        setTotalCartItems(state, action) {
-            state.totalCartItems = action.payload
         }
     }
 });

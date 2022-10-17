@@ -6,7 +6,7 @@ const FeedCard = (props) => {
     return (
         <div className="shadow-self p-4 rounded-3 my-4">
             <div>
-                <img src={feed.creator.image} alt="PROFILE IMAGE" width={25} className="me-2 rounded-circle" /> <Link className="text-primary" to={'/user/' + feed.creator.id + '/'}>{feed.creator.name}</Link>&nbsp;
+                <img src={feed.creator.image ? feed.creator.image : require('../assets/images/DEFAULT_RPOFILE_PICTURE.png')} alt="PROFILE IMAGE" width={25} className="me-2 rounded-circle" /> <Link className="text-primary" to={'/user/' + feed.creator.id + '/'}>{feed.creator.name}</Link>&nbsp;
                 {feed.review && (
                     <>
                         <span>gave his review on the <Link className="text-primary" to={'/books/' + feed.book.id + '/' + feed.book.name + '/'}>book.</Link></span>

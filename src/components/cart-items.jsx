@@ -33,7 +33,7 @@ const CartItems = (props) => {
     const removeItemHandler = async (bookId) => {
         if (authStates.isAuthenticated) {
             const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/shop/cart-item/remove-item/`, {
-                method: 'POST',
+                method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': 'Token ' + authStates.token,

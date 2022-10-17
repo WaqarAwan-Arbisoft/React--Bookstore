@@ -6,7 +6,7 @@ const SearchedUserCard = (props) => {
     return (
         <div className="border-top border-bottom row p-3 align-items-center">
             <div className="col-md-1 rounded-circle">
-                <img src={user.image} alt="USER_PROFILE_IMAGE" width={50} />
+                <img src={user.image ? user.image : require('../assets/images/DEFAULT_RPOFILE_PICTURE.png')} alt="USER_PROFILE_IMAGE" width={50} />
             </div>
             <div className="col-md-9">
                 {user.name}
