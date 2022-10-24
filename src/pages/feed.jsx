@@ -66,7 +66,7 @@ const Feed = () => {
                 <Loader width='100' height='100' />
             </div>}
             {isLoaded && feeds.length > 0 && (
-                <div className="container mx-auto ">
+                <div className="container mx-auto">
                     {feeds.map((feed, index) => (
                         <FeedCard key={index} feed={feed} />
                     ))}

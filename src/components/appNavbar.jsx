@@ -103,6 +103,60 @@ const AppNavbar = () => {
                             <Link to='/books' onClick={handleCloseNavMenu}>
                                 <Typography textAlign="center" className='p-2'>Books</Typography>
                             </Link>
+                            {authStates.isAuthenticated ? (
+                                <div>
+                                    <Link to='/orders'>
+
+                                        <Typography
+                                            onClick={handleCloseNavMenu}
+                                            textAlign="center" className='p-2'
+                                        >
+                                            Orders
+                                        </Typography>
+
+                                    </Link>
+                                    <Link to='/feed'>
+
+                                        <Typography
+                                            onClick={handleCloseNavMenu}
+                                            textAlign="center" className='p-2'
+                                        >
+                                            Feed
+                                        </Typography>
+
+                                    </Link>
+                                    <Link to='/requests'>
+
+                                        <Typography
+                                            onClick={handleCloseNavMenu}
+                                            textAlign="center" className='p-2'
+                                        >
+                                            Requests
+                                        </Typography>
+
+                                    </Link>
+                                    <Link to='/favorites'>
+
+                                        <Typography
+                                            onClick={handleCloseNavMenu}
+                                            textAlign="center" className='p-2'
+                                        >
+                                            Favorites
+                                        </Typography>
+
+                                    </Link>
+                                    <Link to='/chatroom'>
+
+                                        <Typography
+                                            onClick={handleCloseNavMenu}
+                                            textAlign="center" className='p-2'
+                                        >
+                                            Chatroom
+                                        </Typography>
+
+                                    </Link>
+                                </div>
+                            ) : ''}
                         </Menu>
                     </Box>
                     <Typography
@@ -173,6 +227,16 @@ const AppNavbar = () => {
                                         sx={{ my: 2, color: 'white', display: 'block' }}
                                     >
                                         Favorites
+                                    </Button>
+
+                                </Link>
+                                <Link to='/chatroom'>
+
+                                    <Button
+                                        onClick={handleCloseNavMenu}
+                                        sx={{ my: 2, color: 'white', display: 'block' }}
+                                    >
+                                        Chatroom
                                     </Button>
 
                                 </Link>

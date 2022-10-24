@@ -30,7 +30,6 @@ const Orders = () => {
     }
     useEffect(() => {
         fetchOrders();
-
     }, [])
     return (
         <div className="container my-5">

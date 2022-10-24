@@ -96,3 +96,29 @@ textarea {
 .font-family-rubik {
   font-family: 'Rubik Dirt', cursive !important;
 }
+
+.chatroom_msgs_container {
+  height: 50vh;
+  overflow-y: scroll;
+  padding: 15px;
+  border-radius: 25px;
+}
+
+.chatroom_write_msg_container input {
+  width: 100%;
+  border: none;
+  border-radius: 10px;
+}
+
+.chatroom_write_msg_container input:focus {
+  outline: none;
+  border: none;
+}
+
+.msg_box_other {
+  background-color: rgb(230, 248, 255);
+}
+
+.msg_box_self {
+  background-color: rgb(236, 253, 211);
+}

@@ -65,12 +65,11 @@ const SearchUserModal = (props) => {
         >
             <Modal.Header>
                 <Modal.Title id="contained-modal-title-vcenter" className='w-75 mx-auto py-3'>
-
                     <TextField
                         id="input-with-icon-textfield"
                         fullWidth
                         InputProps={{
-                            placeholder: "Search user by name...",
+                            placeholder: "Search user by name or email...",
                             startAdornment: (
                                 <InputAdornment position="start">
                                     <SearchIcon />
