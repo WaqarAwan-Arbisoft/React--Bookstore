@@ -14,10 +14,10 @@ const SearchUserModal = (props) => {
     const [count, setCount] = useState(0);
     const authStates = useSelector(states => states.auth)
     const searchUserHandler = async (e) => {
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/user/fetch-all/?search=${e === undefined ? '' : e.target.value}&limit=${USER_SEARCH_LIMIT}`, {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/user/fetch-all/?search=${e === undefined ? '' : e.target.value}&limit=${USER_SEARCH_LIMIT}&offset=0`, {
             method: "GET",
             headers: {
-                'Authorization': 'Token ' + authStates.token,
+                'Authorization': 'Bearer ' + authStates.token,
                 'Content-Type': 'application/json'
             }
         })
@@ -37,11 +37,11 @@ const SearchUserModal = (props) => {
     }, [])
 
     const paginationHandler = async (e) => {
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/user/fetch-all/?offset=${USER_SEARCH_LIMIT * (parseInt(e.target.innerText) - 1)}`, {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/user/fetch-all/?offset=${USER_SEARCH_LIMIT * (parseInt(e.target.innerText) - 1)}&limit=${USER_SEARCH_LIMIT}`, {
             method: "GET",
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Token ' + authStates.token
+                'Authorization': 'Bearer ' + authStates.token
             }
         })
         let respData;

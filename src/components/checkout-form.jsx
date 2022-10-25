@@ -44,7 +44,7 @@ const CheckoutForm = (props) => {
                             method: "POST",
                             headers: {
                                 'Content-type': "application/json",
-                                'Authorization': `Token ${authStates.token}`
+                                'Authorization': `Bearer ${authStates.token}`
                             },
                             body: JSON.stringify({
                                 email: email,
@@ -66,7 +66,7 @@ const CheckoutForm = (props) => {
                         response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/shop/get-update-delete-cart/`, {
                             method: "DELETE",
                             headers: {
-                                'Authorization': `Token ${authStates.token}`
+                                'Authorization': `Bearer ${authStates.token}`
                             }
                         });
                         if (response.ok) {
@@ -90,6 +90,7 @@ const CheckoutForm = (props) => {
                 setIsLoaded(true)
             }
         }).catch(err => {
+            dispatch(tempActions.addErrorToast({ message: "An error occurred." }))
             console.log(err)
             setIsLoaded(true);
         })

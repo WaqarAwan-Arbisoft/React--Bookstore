@@ -15,7 +15,6 @@ import { useState } from 'react';
 import Loader from '../components/loader';
 import ErrorAlert from '../components/error-alert';
 import Countdown from 'react-countdown';
-import { GoogleLogin } from 'react-google-login';
 
 const theme = createTheme();
 
@@ -89,6 +88,7 @@ export default function Register() {
         formData.append('image', image);
         formData.append('country', country);
         formData.append('age', age);
+
         const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/user/confirm-email/`, {
             method: "POST",
             body: formData
@@ -137,9 +137,6 @@ export default function Register() {
             setFormStep(2);
             setIsLoaded(true);
         }
-    }
-    const responseGoogle = (response) => {
-        console.log(response);
     }
 
     const tryAgainHandler = () => {
@@ -278,14 +275,6 @@ export default function Register() {
                                         >
                                             Sign Up
                                         </Button>
-                                        <GoogleLogin
-                                            clientId="533792682925-0qr8e909spqng34b65nm49gujeu5un0h.apps.googleusercontent.com"
-                                            buttonText="Login with Google"
-                                            onSuccess={responseGoogle}
-                                            onFailure={responseGoogle}
-                                            className='w-100 mb-3'
-                                            cookiePolicy={'single_host_origin'}
-                                        />
                                         <Grid container justifyContent="flex-end">
                                             <Grid item>
                                                 <Link to="/login" variant="body2" className='text-primary'>

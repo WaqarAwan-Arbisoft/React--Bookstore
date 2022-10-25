@@ -12,7 +12,7 @@ const Favorites = () => {
         const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/shop/fetch-favorites/`, {
             method: "GET",
             headers: {
-                'Authorization': 'Token ' + authStates.token,
+                'Authorization': 'Bearer ' + authStates.token,
                 'Content-Type': 'application/json'
             }
         })
@@ -33,7 +33,7 @@ const Favorites = () => {
         const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/shop/remove-favorite/${bookId}/`, {
             method: "DELETE",
             headers: {
-                'Authorization': 'Token ' + authStates.token,
+                'Authorization': 'Bearer ' + authStates.token,
                 'Content-Type': 'application/json'
             }
         })

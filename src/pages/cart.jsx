@@ -27,7 +27,7 @@ const Cart = () => {
                         method: "POST",
                         headers: {
                             'Content-Type': 'application/json',
-                            'Authorization': 'Token ' + authStates.token,
+                            'Authorization': 'Bearer ' + authStates.token,
                         },
                         body: JSON.stringify({
                             "book": item['bookId'],
@@ -44,7 +44,7 @@ const Cart = () => {
                 response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/shop/fetch-items/`, {
                     method: "GET",
                     headers: {
-                        'Authorization': 'Token ' + authStates.token
+                        'Authorization': 'Bearer ' + authStates.token
                     }
                 });
             }
@@ -80,7 +80,7 @@ const Cart = () => {
                 response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/shop/get-update-delete-cart/`, {
                     method: "GET",
                     headers: {
-                        'Authorization': 'Token ' + authStates.token
+                        'Authorization': 'Bearer ' + authStates.token
                     }
                 });
             }
@@ -107,7 +107,7 @@ const Cart = () => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Token ' + authStates.token
+                'Authorization': 'Bearer ' + authStates.token
             },
             body: JSON.stringify({
                 "items": cartItemsData
@@ -120,7 +120,7 @@ const Cart = () => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Token ' + authStates.token
+                'Authorization': 'Bearer ' + authStates.token
             },
             body: JSON.stringify({
                 "items": cartItemsData

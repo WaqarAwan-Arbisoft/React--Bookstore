@@ -29,7 +29,7 @@ const FriendRequests = () => {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Token ' + authStates.token
+                'Authorization': 'Bearer ' + authStates.token
             }
         })
         if (response.ok) {
@@ -47,7 +47,7 @@ const FriendRequests = () => {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Token ' + authStates.token
+                'Authorization': 'Bearer ' + authStates.token
             }
         })
         if (response.ok) {
@@ -67,7 +67,7 @@ const FriendRequests = () => {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Token ' + authStates.token
+                'Authorization': 'Bearer ' + authStates.token
             },
             body: JSON.stringify({
                 initiatedBy: userId
@@ -83,7 +83,7 @@ const FriendRequests = () => {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Token ' + authStates.token
+                'Authorization': 'Bearer ' + authStates.token
             }
         });
         if (response.ok) {
@@ -101,7 +101,7 @@ const FriendRequests = () => {
             method: "GET",
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Token ' + authStates.token
+                'Authorization': 'Bearer ' + authStates.token
             }
         })
         let respData;

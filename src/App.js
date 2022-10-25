@@ -37,12 +37,42 @@ function App() {
   const successToasts = useSelector(state => state.temp.successToasts);
 
   //* Helper function for this module
+  const refreshAccessToken = async (token) => {
+    const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/auth/token`, {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        "refresh_token": token,
+        "grant_type": "refresh_token",
+        "client_id": process.env.REACT_APP_DRF_CLIENT_ID,
+        "client_secret": process.env.REACT_APP_DRF_CLIENT_SECRET,
+      })
+    })
+    if (response.ok) {
+      let authTokens = await response.json();
+      let accessToken = authTokens.access_token
+      let refreshToken = authTokens.refresh_token
+      cookies.remove('app_auth_token')
+      cookies.remove('app_refresh_token')
+      cookies.set('app_auth_token', accessToken, { path: "/" })
+      cookies.set('app_refresh_token', refreshToken, { path: "/" })
+      activateSession(accessToken, refreshToken)
+    }
+    else {
+      cookies.remove('app_auth_token');
+      cookies.remove('app_refresh_token');
+      dispatch(authAction.logout())
+      setIsLoaded(true);
+    }
+  }
 
-  const activateSession = async (token) => {
+  const activateSession = async (token, refreshToken) => {
     const userDataResponse = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/user/fetch-user/`, {
       method: "GET",
       headers: {
-        'Authorization': `Token ${token}`,
+        'Authorization': `Bearer ${token}`,
       }
     })
     if (userDataResponse.ok) {
@@ -57,9 +87,7 @@ function App() {
       setIsLoaded(true);
     }
     else {
-      cookies.remove('app_auth_token');
-      dispatch(authAction.logout())
-      setIsLoaded(true);
+      refreshAccessToken(refreshToken)
     }
   }
 
@@ -69,7 +97,7 @@ function App() {
     try {
       setIsLoaded(false);
       if (cookies.get('app_auth_token')) {
-        activateSession(cookies.get('app_auth_token'))
+        activateSession(cookies.get('app_auth_token'), cookies.get('app_refresh_token'))
       }
       else {
         setIsLoaded(true);
@@ -82,8 +110,7 @@ function App() {
   }, [])
   gapi.load("client:auth2", () => {
     gapi.client.init({
-      clientId:
-        "533792682925-0qr8e909spqng34b65nm49gujeu5un0h.apps.googleusercontent.com",
+      clientId: process.env.REACT_APP_GOOGLE_CLIENT_ID,
       plugin_name: "auth",
     });
   });

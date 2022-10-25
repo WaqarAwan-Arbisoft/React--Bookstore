@@ -10,7 +10,7 @@ const CartItems = (props) => {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Token ' + authStates.token,
+                'Authorization': 'Bearer ' + authStates.token,
             },
             body: JSON.stringify({
                 "book": bookId,
@@ -36,7 +36,7 @@ const CartItems = (props) => {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': 'Token ' + authStates.token,
+                    'Authorization': 'Bearer ' + authStates.token,
                 },
                 body: JSON.stringify({
                     "book": bookId,

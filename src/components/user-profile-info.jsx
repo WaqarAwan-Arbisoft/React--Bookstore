@@ -78,7 +78,7 @@ const UserProfileInfo = (props) => {
         const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/user/update/`, {
             method: 'PATCH',
             headers: {
-                'Authorization': 'Token ' + authStates.token
+                'Authorization': 'Bearer ' + authStates.token
             },
             body: formData
         })
@@ -99,7 +99,7 @@ const UserProfileInfo = (props) => {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Token ' + authStates.token
+                'Authorization': 'Bearer ' + authStates.token
             }
         })
         if (response.ok) {
@@ -124,7 +124,7 @@ const UserProfileInfo = (props) => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Token ' + authStates.token
+                'Authorization': 'Bearer ' + authStates.token
             },
             body: JSON.stringify({
                 initiatedTowards: userId
@@ -139,7 +139,7 @@ const UserProfileInfo = (props) => {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Token ' + authStates.token
+                'Authorization': 'Bearer ' + authStates.token
             }
         })
         if (response.ok) {
@@ -151,7 +151,7 @@ const UserProfileInfo = (props) => {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Token ' + authStates.token
+                'Authorization': 'Bearer ' + authStates.token
             }
         })
         if (response.ok) {
@@ -163,7 +163,7 @@ const UserProfileInfo = (props) => {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Token ' + authStates.token
+                'Authorization': 'Bearer ' + authStates.token
             },
             body: JSON.stringify({
                 initiatedBy: userId

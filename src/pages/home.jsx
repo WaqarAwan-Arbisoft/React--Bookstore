@@ -68,7 +68,7 @@ const Home = () => {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': 'Token ' + authState.token,
+                    'Authorization': 'Bearer ' + authState.token,
                 },
                 body: JSON.stringify({
                     "book": bookId,
@@ -80,6 +80,7 @@ const Home = () => {
             }
             else {
                 console.log(await response.json())
+                dispatch(tempActions.addErrorToast({ message: "Unable to add it to the cart." }))
             }
         }
         else {

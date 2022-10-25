@@ -18,7 +18,7 @@ const Feed = () => {
             method: "GET",
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Token ' + authStates.token
+                'Authorization': 'Bearer ' + authStates.token
             }
         })
         if (response.ok) {
@@ -38,7 +38,7 @@ const Feed = () => {
             method: "GET",
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Token ' + authStates.token
+                'Authorization': 'Bearer ' + authStates.token
             }
         })
         let respData;

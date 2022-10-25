@@ -14,9 +14,11 @@ import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import ErrorAlert from '../components/error-alert';
 import Loader from '../components/loader';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { authAction } from '../store/auth-slice';
 import Cookies from 'universal-cookie';
+import { GoogleLogin } from 'react-google-login';
+import { tempActions } from "../store/temp-reducers";
 
 
 const theme = createTheme();
@@ -28,7 +30,6 @@ export default function Login() {
     const [error, setError] = useState({ status: false, message: '' });
     const [isLoaded, setIsLoaded] = useState(true);
     const dispatch = useDispatch();
-    const isAuthenticated = useSelector(state => state.auth.isAuthenticated)
 
     //* Helper functions for this page
     const emailChangeHandler = (e) => {
@@ -46,6 +47,34 @@ export default function Login() {
         }
         return false;
     }
+    const fetchUserData = async (accessToken, refreshToken) => {
+        const fetchUserResponse = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/user/fetch-user/`, {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + accessToken,
+            },
+        })
+        if (fetchUserResponse.ok) {
+            let userData = await fetchUserResponse.json();
+            cookies.remove('app_auth_token')
+            cookies.remove('app_refresh_token')
+            cookies.set('app_auth_token', accessToken, { path: "/" })
+            cookies.set('app_refresh_token', refreshToken, { path: "/" })
+            dispatch(authAction.login({
+                token: accessToken,
+                id: userData.id,
+                email: userData.email,
+                username: userData.name,
+                image: userData.image,
+            }))
+            setIsLoaded(true)
+        }
+        else {
+            dispatch(tempActions.addErrorToast({ message: "An Error occurred." }))
+            setIsLoaded(true)
+        }
+    }
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoaded(false);
@@ -54,45 +83,77 @@ export default function Login() {
             setIsLoaded(true);
             return;
         }
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/user/login/`, {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/auth/token`, {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                "email": email,
-                "password": password
+                "username": email,
+                "password": password,
+                "grant_type": "password",
+                "client_id": process.env.REACT_APP_DRF_CLIENT_ID,
+                "client_secret": process.env.REACT_APP_DRF_CLIENT_SECRET,
             })
         })
-        let respData;
         if (response.ok) {
-            respData = await response.json();
-            let token = respData.token;
-            const userDataResponse = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/user/fetch-user/`, {
-                method: "GET",
-                headers: {
-                    'Authorization': `Token ${token}`,
-                }
-            })
-            if (userDataResponse.ok) {
-                let userData = await userDataResponse.json();
-                cookies.remove('app_auth_token')
-                cookies.set('app_auth_token', token, { path: "/" })
-                dispatch(authAction.login({
-                    token: token,
-                    id: userData.id,
-                    email: userData.email,
-                    username: userData.name,
-                    image: userData.image,
-                }))
-            }
+            let authToken = await response.json();
+            let accessToken = authToken.access_token
+            let refreshToken = authToken.refresh_token
+            fetchUserData(accessToken, refreshToken)
         }
         else {
-            respData = await response.json()
-            setError({ status: true, message: respData.error.detail })
+            let respData = await response.json()
+            setError({ status: true, message: respData.error_description })
             setIsLoaded(true);
         }
     };
+    const responseGoogle = async (googleResponse) => {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/auth/convert-token`, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                "token": googleResponse.accessToken,
+                "backend": "google-oauth2",
+                "grant_type": "convert_token",
+                "client_id": process.env.REACT_APP_DRF_CLIENT_ID,
+                "client_secret": process.env.REACT_APP_DRF_CLIENT_SECRET,
+            })
+        })
+        if (response.ok) {
+            let googleAuthTokens = await response.json();
+            let accessToken = googleAuthTokens.access_token
+            let refreshToken = googleAuthTokens.refresh_token
+            fetchUserData(accessToken, refreshToken)
+            // const fetchUserResponse = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/user/fetch-user/`, {
+            //     method: "GET",
+            //     headers: {
+            //         'Content-Type': 'application/json',
+            //         'Authorization': 'Bearer ' + accessToken,
+            //     },
+            // })
+            // if (fetchUserResponse.ok) {
+            //     let userData = await fetchUserResponse.json();
+            //     cookies.set('app_auth_token', accessToken, { path: "/" })
+            //     cookies.set('app_refresh_token', refreshToken, { path: "/" })
+            //     dispatch(authAction.login({
+            //         token: accessToken,
+            //         id: userData.id,
+            //         email: userData.email,
+            //         username: userData.name,
+            //         image: userData.image,
+            //     }))
+            // }
+            // else {
+            //     dispatch(tempActions.addErrorToast({ message: "Error Google login." }))
+            // }
+        }
+        else {
+            dispatch(tempActions.addErrorToast({ message: "Error Google login." }))
+        }
+    }
     //* Helper functions for this page
 
     return (
@@ -168,6 +229,14 @@ export default function Login() {
                                     >
                                         Sign In
                                     </Button>
+                                    <GoogleLogin
+                                        clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
+                                        buttonText="Login with Google"
+                                        onSuccess={responseGoogle}
+                                        onFailure={responseGoogle}
+                                        className='w-100 mb-3'
+                                        cookiePolicy={'single_host_origin'}
+                                    />
                                     <Grid container>
                                         <Grid item xs>
                                             <Link to="/forgot-password" variant="body2" className='text-primary'>

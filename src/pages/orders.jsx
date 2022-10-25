@@ -1,22 +1,22 @@
 import { useState } from "react";
 import { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import OrderTable from "../components/order-table";
+import { tempActions } from "../store/temp-reducers";
 
 
 const Orders = () => {
     const [isLoaded, setIsLoaded] = useState(false)
-    const [isDetailLoaded, setIsDetailLoaded] = useState(false)
-    const [orderDetails, setOrderDetails] = useState([])
     const [orders, setOrders] = useState([])
     const authStates = useSelector(states => states.auth)
+    const dispatch = useDispatch()
 
     const fetchOrders = async () => {
         const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/shop/fetch-orders/`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Token ' + authStates.token
+                'Authorization': 'Bearer ' + authStates.token
             }
         })
         if (response.ok) {
@@ -26,6 +26,7 @@ const Orders = () => {
         }
         else {
             console.log(response)
+            dispatch(tempActions.addErrorToast({ message: "An error occurred while fetching the orders data." }))
         }
     }
     useEffect(() => {

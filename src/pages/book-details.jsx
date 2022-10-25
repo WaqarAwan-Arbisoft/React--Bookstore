@@ -38,7 +38,7 @@ const BookDetails = () => {
             response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/books/fetch-book/${id}/`);
         }
         catch (err) {
-            dispatch(tempActions({ message: "Server offline." }))
+            dispatch(tempActions.addErrorToast({ message: "Server offline." }))
         }
         let respData;
         if (response.ok) {
@@ -76,7 +76,7 @@ const BookDetails = () => {
             method: "GET",
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Token ' + authState.token,
+                'Authorization': 'Bearer ' + authState.token,
             }
         })
         if (response.ok) {
@@ -88,7 +88,7 @@ const BookDetails = () => {
             method: "GET",
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Token ' + authState.token,
+                'Authorization': 'Bearer ' + authState.token,
             }
         })
         if (response.ok) {
@@ -109,7 +109,7 @@ const BookDetails = () => {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': 'Token ' + authState.token,
+                    'Authorization': 'Bearer ' + authState.token,
                 },
                 body: JSON.stringify({
                     "book": bookId,
@@ -146,7 +146,7 @@ const BookDetails = () => {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Token ' + authState.token,
+                'Authorization': 'Bearer ' + authState.token,
             }
         })
         if (response.ok) {
@@ -161,7 +161,7 @@ const BookDetails = () => {
             method: "DELETE",
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Token ' + authState.token,
+                'Authorization': 'Bearer ' + authState.token,
             }
         })
         if (response.ok) {
@@ -176,7 +176,7 @@ const BookDetails = () => {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Token ' + authState.token,
+                'Authorization': 'Bearer ' + authState.token,
             }
         })
         if (response.ok) {
@@ -191,7 +191,7 @@ const BookDetails = () => {
             method: "DELETE",
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Token ' + authState.token,
+                'Authorization': 'Bearer ' + authState.token,
             }
         })
         if (response.ok) {
@@ -216,6 +216,7 @@ const BookDetails = () => {
             }
         }
         catch (err) {
+            dispatch(tempActions.addErrorToast({ message: "An error occurred." }))
             console.log(err)
         }
     }, [])

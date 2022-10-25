@@ -18,7 +18,7 @@ const NewReview = (props) => {
         const response = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/shop/add-review/`, {
             method: "POST",
             headers: {
-                'Authorization': `Token ${authStates.token}`,
+                'Authorization': `Bearer ${authStates.token}`,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
