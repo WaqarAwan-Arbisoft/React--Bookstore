@@ -127,28 +127,6 @@ export default function Login() {
             let accessToken = googleAuthTokens.access_token
             let refreshToken = googleAuthTokens.refresh_token
             fetchUserData(accessToken, refreshToken)
-            // const fetchUserResponse = await fetch(`${process.env.REACT_APP_BACKEND_DOMAIN}/user/fetch-user/`, {
-            //     method: "GET",
-            //     headers: {
-            //         'Content-Type': 'application/json',
-            //         'Authorization': 'Bearer ' + accessToken,
-            //     },
-            // })
-            // if (fetchUserResponse.ok) {
-            //     let userData = await fetchUserResponse.json();
-            //     cookies.set('app_auth_token', accessToken, { path: "/" })
-            //     cookies.set('app_refresh_token', refreshToken, { path: "/" })
-            //     dispatch(authAction.login({
-            //         token: accessToken,
-            //         id: userData.id,
-            //         email: userData.email,
-            //         username: userData.name,
-            //         image: userData.image,
-            //     }))
-            // }
-            // else {
-            //     dispatch(tempActions.addErrorToast({ message: "Error Google login." }))
-            // }
         }
         else {
             dispatch(tempActions.addErrorToast({ message: "Error Google login." }))
